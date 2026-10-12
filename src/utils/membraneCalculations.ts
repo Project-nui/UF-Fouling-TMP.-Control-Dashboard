@@ -10,6 +10,8 @@ export interface MembraneParameters {
   cipDrop: number;             // e.g. 0.30 bar drop
   consecutiveEfmLimit: number; // e.g. 3 times
   fluxAveraging: 'daily' | 'all';
+  minPermeability?: number;    // e.g. 100 LMH/bar (เกณฑ์เตือนเมื่อต่ำกว่า = เริ่มอุดตัน)
+  maxPermeability?: number;    // e.g. 700 LMH/bar (เกณฑ์เตือนเมื่อสูงกว่า = เสี่ยงเยื่อกรองขาด/รั่ว)
 }
 
 export interface CleaningEvent {
@@ -33,6 +35,8 @@ export interface UnitAnalysis {
   maxFlux: number | null;
   latestFlux: number | null;
   avgPermeability: number | null;
+  permeabilityStatus?: 'normal' | 'low' | 'high' | 'no-data';
+  permeabilityAlert?: string | null;
   percentTimeOverWarning: number;
   percentOperatingDuty: number;
   efmCount: number;
@@ -162,6 +166,24 @@ export function analyzePlantData(
     const avgPermeability =
       avgFlux !== null && currentTmp !== null && currentTmp > 0 ? avgFlux / currentTmp : null;
 
+    // Evaluate Permeability Alerts (High / Low alarms)
+    const minPerm = params.minPermeability ?? 100;
+    const maxPerm = params.maxPermeability ?? 700;
+    let permeabilityStatus: UnitAnalysis['permeabilityStatus'] = 'no-data';
+    let permeabilityAlert: string | null = null;
+
+    if (avgPermeability !== null && !isNaN(avgPermeability)) {
+      if (avgPermeability < minPerm) {
+        permeabilityStatus = 'low';
+        permeabilityAlert = `Permeability ต่ำ (${avgPermeability.toFixed(0)} < ${minPerm} LMH/bar) เสี่ยงอุดตันสะสม`;
+      } else if (avgPermeability > maxPerm) {
+        permeabilityStatus = 'high';
+        permeabilityAlert = `Permeability สูงผิดปกติ (${avgPermeability.toFixed(0)} > ${maxPerm} LMH/bar) เสี่ยงเยื่อกรองรั่ว/ขาด`;
+      } else {
+        permeabilityStatus = 'normal';
+      }
+    }
+
     const overWarningCount = tmpVals.filter(v => v >= params.warningTmp).length;
     const percentTimeOverWarning = tmpVals.length > 0 ? (overWarningCount / tmpVals.length) * 100 : 0;
     const percentOperatingDuty = allPointsCount > 0 ? (runPointsCount / allPointsCount) * 100 : 100;
@@ -236,6 +258,8 @@ export function analyzePlantData(
       maxFlux,
       latestFlux,
       avgPermeability,
+      permeabilityStatus,
+      permeabilityAlert,
       percentTimeOverWarning,
       percentOperatingDuty,
       efmCount,

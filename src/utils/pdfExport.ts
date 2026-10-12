@@ -1,5 +1,5 @@
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import html2canvas from 'html2canvas-pro';
 
 export async function exportReportToPDF(containerElementId: string, title = 'UF_TMP_Summary_Report'): Promise<void> {
   const element = document.getElementById(containerElementId);

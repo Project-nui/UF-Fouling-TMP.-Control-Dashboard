@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { UnitAnalysis, calculateLinearTrend, formatDate } from '../utils/membraneCalculations';
+import { UnitAnalysis, calculateLinearTrend } from '../utils/membraneCalculations';
 
 interface FluxRateTrendChartProps {
   analysis: UnitAnalysis;
@@ -72,7 +72,10 @@ export const FluxRateTrendChart: React.FC<FluxRateTrendChartProps> = ({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     ctx.scale(dpr, dpr);
-    ctx.clearRect(0, 0, width, height);
+
+    // Crisp white background
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, width, height);
 
     const padLeft = 55;
     const padRight = 25;
@@ -106,10 +109,10 @@ export const FluxRateTrendChart: React.FC<FluxRateTrendChartProps> = ({
     const getY = (v: number) => padTop + plotH - Math.max(0, Math.min(plotH, ((v - yMin) / ySpan) * plotH));
 
     // Grid & Y Ticks
-    ctx.strokeStyle = '#1F2238';
+    ctx.strokeStyle = '#E2E8F0';
     ctx.lineWidth = 1;
-    ctx.fillStyle = '#A1A1AA';
-    ctx.font = '11px system-ui';
+    ctx.fillStyle = '#64748B';
+    ctx.font = '500 11px system-ui';
     ctx.textAlign = 'right';
 
     const step = yMax > 60 ? 10 : 5;
@@ -127,19 +130,19 @@ export const FluxRateTrendChart: React.FC<FluxRateTrendChartProps> = ({
     ctx.translate(14, padTop + plotH / 2);
     ctx.rotate(-Math.PI / 2);
     ctx.textAlign = 'center';
-    ctx.fillStyle = '#E2E8F0';
-    ctx.font = '500 11px system-ui';
+    ctx.fillStyle = '#1E293B';
+    ctx.font = '600 11px system-ui';
     ctx.fillText('Flux rate (LMH = L/m²/h)', 0, 0);
     ctx.restore();
 
     // X Ticks (Date)
     ctx.textAlign = 'center';
-    ctx.fillStyle = '#A1A1AA';
+    ctx.fillStyle = '#64748B';
     const xTicksCount = Math.min(8, Math.max(4, Math.floor(plotW / 90)));
     for (let i = 0; i <= xTicksCount; i++) {
       const t = tMin + (i / xTicksCount) * (tMax - tMin);
       const x = getX(t);
-      ctx.strokeStyle = '#2C2F4D';
+      ctx.strokeStyle = '#CBD5E1';
       ctx.beginPath();
       ctx.moveTo(x, padTop + plotH);
       ctx.lineTo(x, padTop + plotH + 5);
@@ -152,8 +155,8 @@ export const FluxRateTrendChart: React.FC<FluxRateTrendChartProps> = ({
     }
 
     // Draw Scatter points
-    ctx.fillStyle = '#06B6D4';
-    const radius = averagingMode === 'daily' ? 4 : 2.5;
+    ctx.fillStyle = '#0284C7';
+    const radius = averagingMode === 'daily' ? 4 : 2.8;
     points.forEach(p => {
       const x = getX(p.timestamp);
       const y = getY(p.flux);
@@ -169,9 +172,9 @@ export const FluxRateTrendChart: React.FC<FluxRateTrendChartProps> = ({
       const x2 = getX(trend.xMax);
       const y2 = getY(trend.intercept + (trend.slopePerDay / 86400000) * trend.xMax);
 
-      ctx.strokeStyle = '#8B5CF6';
+      ctx.strokeStyle = '#7C3AED';
       ctx.setLineDash([6, 4]);
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 2.2;
       ctx.beginPath();
       ctx.moveTo(x1, y1);
       ctx.lineTo(x2, y2);
@@ -237,35 +240,35 @@ export const FluxRateTrendChart: React.FC<FluxRateTrendChartProps> = ({
   const handleMouseLeave = () => setHoveredPoint(null);
 
   return (
-    <div className="bg-[#13141F] border border-[#1F2238] rounded-xl p-5 shadow-sm">
+    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-2xs">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
         <div>
-          <h3 className="text-sm font-semibold text-white">
+          <h3 className="text-sm font-bold text-slate-900">
             อัตราการกรอง Flux Rate ของ {analysis.unitName} (LMH)
           </h3>
-          <p className="text-xs text-[#A1A1AA] mt-0.5">
-            จุดสีฟ้า = ค่า Flux · เส้นประม่วงนีออน = แนวโน้มเชิงเส้น (Linear Trend)
+          <p className="text-xs text-slate-500 mt-0.5">
+            จุดสีฟ้า = ค่า Flux · เส้นประสีม่วง = แนวโน้มเชิงเส้น (Linear Trend)
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           {trend && (
-            <div className="text-xs bg-[#8B5CF6]/15 border border-[#8B5CF6]/30 text-[#8B5CF6] px-2.5 py-1 rounded-lg">
+            <div className="text-xs bg-purple-50 border border-purple-200 text-purple-700 px-2.5 py-1 rounded-lg">
               แนวโน้ม:{' '}
-              <span className="font-semibold text-white">
+              <span className="font-bold text-slate-900">
                 {trend.changePer30Days > 0 ? '+' : ''}
                 {trend.changePer30Days.toFixed(1)} LMH ต่อ 30 วัน
               </span>
             </div>
           )}
 
-          <div className="flex items-center gap-1 bg-[#090A0F] border border-[#1F2238] p-0.5 rounded-lg text-xs">
+          <div className="flex items-center gap-1 bg-slate-100 border border-slate-200 p-0.5 rounded-lg text-xs">
             <button
               onClick={() => onAveragingChange('daily')}
               className={`px-2.5 py-1 rounded font-medium transition-colors cursor-pointer ${
                 averagingMode === 'daily'
-                  ? 'bg-[#8B5CF6] text-white shadow-xs font-semibold'
-                  : 'text-[#A1A1AA] hover:text-white'
+                  ? 'bg-white text-blue-700 shadow-2xs font-semibold'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               เฉลี่ยรายวัน
@@ -274,8 +277,8 @@ export const FluxRateTrendChart: React.FC<FluxRateTrendChartProps> = ({
               onClick={() => onAveragingChange('all')}
               className={`px-2.5 py-1 rounded font-medium transition-colors cursor-pointer ${
                 averagingMode === 'all'
-                  ? 'bg-[#8B5CF6] text-white shadow-xs font-semibold'
-                  : 'text-[#A1A1AA] hover:text-white'
+                  ? 'bg-white text-blue-700 shadow-2xs font-semibold'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               ทุกจุดข้อมูล
@@ -288,31 +291,31 @@ export const FluxRateTrendChart: React.FC<FluxRateTrendChartProps> = ({
         ref={containerRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className="relative w-full h-[300px] select-none bg-[#090A0F] border border-[#1F2238] rounded-xl overflow-hidden"
+        className="relative w-full h-[300px] select-none bg-white border border-slate-200 rounded-xl overflow-hidden"
       >
         <canvas ref={canvasRef} className="block w-full h-full cursor-crosshair" />
 
         {points.length === 0 && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#090A0F]/90 text-center p-4">
-            <p className="text-sm font-semibold text-white">ไม่มีข้อมูลในช่วงเวลาที่เลือก</p>
-            <p className="text-xs text-[#A1A1AA] mt-0.5">กรุณาคลิก "แสดงค่าเท่าที่ข้อมูลมี" เพื่อดูข้อมูลจริงทั้งหมด</p>
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/90 text-center p-4">
+            <p className="text-sm font-semibold text-slate-800">ไม่มีข้อมูลในช่วงเวลาที่เลือก</p>
+            <p className="text-xs text-slate-500 mt-0.5">กรุณาคลิก "แสดงค่าเท่าที่ข้อมูลมี" เพื่อดูข้อมูลจริงทั้งหมด</p>
           </div>
         )}
 
         {hoveredPoint && (
           <div
-            className="absolute z-20 pointer-events-none bg-[#13141F]/95 text-white rounded-xl p-2.5 text-xs shadow-2xl backdrop-blur-md border border-[#06B6D4]/40"
+            className="absolute z-20 pointer-events-none bg-white text-slate-800 rounded-xl p-2.5 text-xs shadow-xl border border-sky-300"
             style={{
               left: Math.min(hoveredPoint.xPx + 15, (containerRef.current?.clientWidth || 600) - 150),
               top: Math.max(10, Math.min(hoveredPoint.yPx - 20, 200))
             }}
           >
-            <div className="font-semibold text-[#A1A1AA] border-b border-[#1F2238] pb-1 mb-1">
+            <div className="font-semibold text-slate-500 border-b border-slate-100 pb-1 mb-1">
               วันที่ {hoveredPoint.dateStr}
             </div>
             <div className="flex justify-between gap-3">
-              <span className="text-[#A1A1AA]">Flux:</span>
-              <span className="font-mono font-bold text-[#06B6D4]">
+              <span className="text-slate-500">Flux:</span>
+              <span className="font-mono font-bold text-sky-600">
                 {hoveredPoint.flux.toFixed(1)} LMH
               </span>
             </div>

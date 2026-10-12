@@ -15,9 +15,9 @@ export function createInitialDataset(): ProcessedDataset {
 }
 
 export const UNIT_COLORS = [
-  '#8B5CF6', // Neon Violet (UF-1)
-  '#EC4899', // Neon Pink (UF-2)
-  '#06B6D4', // Neon Cyan (UF-3)
-  '#10B981', // Neon Emerald (UF-4)
-  '#F59E0B'  // Neon Amber (UF-5)
+  '#1D4ED8', // Rich Royal Blue (UF-1)
+  '#D97706', // Vibrant Amber/Orange (UF-2)
+  '#059669', // Emerald Green (UF-3)
+  '#7C3AED', // Deep Violet (UF-4)
+  '#DC2626'  // Crimson Red (UF-5)
 ];

@@ -3,7 +3,7 @@ import { X, Download, Printer, FileText, CheckCircle2, AlertTriangle, ShieldChec
 import { UnitAnalysis, MembraneParameters, formatDate, formatNumber, calculateLinearTrend } from '../utils/membraneCalculations';
 import { ProcessedDataset, UNIT_COLORS } from '../data/initialData';
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import html2canvas from 'html2canvas-pro';
 
 interface ReportModalProps {
   isOpen: boolean;

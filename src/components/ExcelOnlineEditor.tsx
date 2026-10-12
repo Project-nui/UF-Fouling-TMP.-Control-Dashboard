@@ -490,28 +490,28 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
   };
 
   return (
-    <div className="bg-[#13141F] border border-[#1F2238] rounded-2xl shadow-xl overflow-hidden flex flex-col font-['Prompt',system-ui,sans-serif]">
+    <div className="bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden flex flex-col font-['Prompt',system-ui,sans-serif]">
       {/* Excel Ribbon / Top Bar */}
-      <div className="bg-[#13141F] border-b border-[#1F2238] text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 shadow-md">
+      <div className="bg-white border-b border-slate-200 text-slate-800 px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 shadow-2xs">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#8B5CF6] to-[#EC4899] flex items-center justify-center text-white shadow-lg shadow-[#8B5CF6]/30">
+          <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
             <FileSpreadsheet className="w-5 h-5 text-white" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-base font-bold text-white tracking-wide">
+              <h1 className="text-base font-bold text-slate-900 tracking-wide">
                 Excel Online – นำเข้าและแก้ไขข้อมูลเยื่อกรอง UF
               </h1>
-              <span className="px-2 py-0.5 rounded-lg text-[11px] font-semibold bg-[#8B5CF6]/15 text-[#8B5CF6] border border-[#8B5CF6]/30">
+              <span className="px-2 py-0.5 rounded-lg text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
                 Live Spreadsheet Editor
               </span>
               {isDirty && (
-                <span className="px-2 py-0.5 rounded-lg text-[11px] font-bold bg-[#EC4899]/20 text-[#EC4899] border border-[#EC4899]/40 animate-pulse">
+                <span className="px-2 py-0.5 rounded-lg text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200 animate-pulse">
                   ● มีการแก้ไขที่ยังไม่ได้บันทึก
                 </span>
               )}
             </div>
-            <p className="text-xs text-[#A1A1AA]">
+            <p className="text-xs text-slate-500">
               แก้ไขค่า TMP (bar) และ Flow (m³/h) ได้สดๆ ทุกช่อง · คำนวณ Flux (LMH) ให้อัตโนมัติ · บันทึกผลเข้าสู่แดชบอร์ดทันที
             </p>
           </div>
@@ -522,7 +522,7 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
           <button
             type="button"
             onClick={handleSaveAndApply}
-            className="px-4 py-2 bg-gradient-to-r from-[#8B5CF6] to-[#EC4899] hover:opacity-95 text-white font-bold text-xs rounded-xl shadow-lg shadow-[#8B5CF6]/30 transition-all flex items-center gap-1.5 cursor-pointer transform active:scale-95"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/20 transition-all flex items-center gap-1.5 cursor-pointer transform active:scale-95"
             title="บันทึกข้อมูลที่แก้ไข และส่งเข้าวิเคราะห์บนแดชบอร์ดทันที"
           >
             <Save className="w-4 h-4 text-white" />
@@ -533,18 +533,18 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
             <button
               type="button"
               onClick={onNavigateToDashboard}
-              className="px-3.5 py-2 bg-[#1F2238] hover:bg-[#272B47] text-white font-medium text-xs rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer border border-[#2F3459]"
+              className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer border border-slate-200"
               title="กลับไปดูแดชบอร์ดกราฟ"
             >
               <span>ดูแดชบอร์ด</span>
-              <ChevronRight className="w-3.5 h-3.5 text-[#8B5CF6]" />
+              <ChevronRight className="w-3.5 h-3.5 text-blue-600" />
             </button>
           )}
         </div>
       </div>
 
       {/* Spreadsheet Operations Toolbar */}
-      <div className="bg-[#090A0F] border-b border-[#1F2238] px-5 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div className="bg-slate-50 border-b border-slate-200 px-5 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
         {/* Left tools: File & Edit actions */}
         <div className="flex items-center gap-2 flex-wrap">
           <input
@@ -557,56 +557,56 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="px-3 py-1.5 bg-[#13141F] hover:bg-[#191B29] text-white border border-[#1F2238] rounded-lg font-semibold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+            className="px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-lg font-semibold flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
             title="อัปโหลดไฟล์ Excel หรือ CSV เข้ามาเปิดในตาราง"
           >
-            <Upload className="w-3.5 h-3.5 text-[#8B5CF6]" />
+            <Upload className="w-3.5 h-3.5 text-blue-600" />
             <span>เปิดไฟล์ Excel/CSV</span>
           </button>
 
           <button
             type="button"
             onClick={() => setIsPasteModalOpen(true)}
-            className="px-3 py-1.5 bg-[#13141F] hover:bg-[#191B29] text-white border border-[#1F2238] rounded-lg font-semibold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+            className="px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-lg font-semibold flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
             title="วางข้อมูลตารางที่คัดลอกจาก Excel หรือ Google Sheets"
           >
-            <ClipboardPaste className="w-3.5 h-3.5 text-[#EC4899]" />
+            <ClipboardPaste className="w-3.5 h-3.5 text-purple-600" />
             <span>วางจาก Excel (Paste)</span>
           </button>
 
           <button
             type="button"
             onClick={handleExportToExcel}
-            className="px-3 py-1.5 bg-[#13141F] hover:bg-[#191B29] text-white border border-[#1F2238] rounded-lg font-semibold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+            className="px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-lg font-semibold flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
             title="ดาวน์โหลดตารางข้อมูลนี้เป็นไฟล์ .xlsx"
           >
-            <Download className="w-3.5 h-3.5 text-emerald-400" />
+            <Download className="w-3.5 h-3.5 text-emerald-600" />
             <span>ดาวน์โหลด .xlsx</span>
           </button>
 
-          <div className="h-5 w-px bg-[#1F2238] mx-1 hidden sm:block" />
+          <div className="h-5 w-px bg-slate-200 mx-1 hidden sm:block" />
 
           {/* Add Rows */}
-          <div className="flex items-center gap-1 bg-[#13141F] border border-[#1F2238] rounded-lg p-0.5 shadow-xs">
+          <div className="flex items-center gap-1 bg-white border border-slate-200 rounded-lg p-0.5 shadow-2xs">
             <button
               type="button"
               onClick={() => handleAddRows(addRowsCount)}
-              className="px-2.5 py-1 text-white hover:text-[#8B5CF6] hover:bg-[#8B5CF6]/10 rounded font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+              className="px-2.5 py-1 text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded font-semibold flex items-center gap-1 transition-colors cursor-pointer"
               title={`เพิ่มแถวใหม่จำนวน ${addRowsCount} แถว`}
             >
-              <Plus className="w-3.5 h-3.5 text-[#8B5CF6]" />
+              <Plus className="w-3.5 h-3.5 text-blue-600" />
               <span>เพิ่มแถว (+{addRowsCount})</span>
             </button>
             <select
               value={addRowsCount}
               onChange={e => setAddRowsCount(Number(e.target.value))}
-              className="text-[11px] font-medium bg-[#090A0F] border border-[#1F2238] rounded text-white px-1.5 py-0.5 outline-hidden cursor-pointer"
+              className="text-[11px] font-medium bg-slate-50 border border-slate-200 rounded text-slate-700 px-1.5 py-0.5 outline-hidden cursor-pointer"
               title="จำนวนแถวที่ต้องการเพิ่มในแต่ละครั้ง"
             >
-              <option value={1} className="bg-[#13141F] text-white">1</option>
-              <option value={5} className="bg-[#13141F] text-white">5</option>
-              <option value={10} className="bg-[#13141F] text-white">10</option>
-              <option value={20} className="bg-[#13141F] text-white">20</option>
+              <option value={1}>1</option>
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={20}>20</option>
             </select>
           </div>
 
@@ -614,10 +614,10 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
             <button
               type="button"
               onClick={handleDeleteSelected}
-              className="px-3 py-1.5 bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/40 rounded-lg font-semibold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer animate-fade-in"
+              className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg font-semibold flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer animate-fade-in"
               title={`ลบแถวที่ติ๊กเลือก (${selectedRowIds.size} แถว)`}
             >
-              <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+              <Trash2 className="w-3.5 h-3.5 text-rose-600" />
               <span>ลบแถวที่เลือก ({selectedRowIds.size})</span>
             </button>
           )}
@@ -625,10 +625,10 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
           <button
             type="button"
             onClick={handleResetToAttached}
-            className="px-2.5 py-1.5 text-[#A1A1AA] hover:text-white rounded-lg hover:bg-[#13141F] transition-colors flex items-center gap-1 cursor-pointer"
+            className="px-2.5 py-1.5 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors flex items-center gap-1 cursor-pointer"
             title="รีเซ็ตกลับเป็นข้อมูลต้นฉบับ 43 รอบการกรอง"
           >
-            <RotateCcw className="w-3.5 h-3.5 text-[#8B5CF6]" />
+            <RotateCcw className="w-3.5 h-3.5 text-blue-600" />
             <span className="hidden md:inline">คืนค่าข้อมูลต้นฉบับ</span>
           </button>
         </div>
@@ -636,19 +636,19 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
         {/* Right tools: Search filter */}
         <div className="flex items-center gap-2">
           <div className="relative">
-            <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[#A1A1AA]" />
+            <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
               placeholder="ค้นหาตามวันที่ หรือ ลำดับ..."
-              className="pl-8 pr-3 py-1 text-xs bg-[#13141F] border border-[#1F2238] rounded-lg text-white placeholder-[#71717A] focus:outline-hidden focus:ring-1 focus:ring-[#8B5CF6] focus:border-[#8B5CF6] w-44 sm:w-56"
+              className="pl-8 pr-3 py-1 text-xs bg-white border border-slate-300 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-1 focus:ring-blue-500 focus:border-blue-500 w-44 sm:w-56"
             />
             {searchTerm && (
               <button
                 type="button"
                 onClick={() => setSearchTerm('')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-[#A1A1AA] hover:text-white"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -656,125 +656,124 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
           </div>
         </div>
       </div>
-
       {/* Excel Formula & Status Bar */}
-      <div className="bg-[#13141F] border-b border-[#1F2238] px-5 py-2 flex items-center justify-between gap-4 text-xs">
+      <div className="bg-slate-100/70 border-b border-slate-200 px-5 py-2 flex items-center justify-between gap-4 text-xs">
         <div className="flex items-center gap-3 flex-1 overflow-hidden">
           {/* Active cell coordinates */}
-          <div className="bg-[#090A0F] text-[#8B5CF6] px-2.5 py-1 rounded-lg font-mono font-bold text-xs shrink-0 min-w-14 text-center border border-[#1F2238]">
+          <div className="bg-white text-blue-700 px-2.5 py-1 rounded-lg font-mono font-bold text-xs shrink-0 min-w-14 text-center border border-slate-200 shadow-2xs">
             {activeCell ? `R${activeCell.rowIndex + 1}:${String(activeCell.colKey).toUpperCase()}` : 'A1'}
           </div>
 
-          <div className="text-[#8B5CF6] font-serif italic text-sm">fx</div>
+          <div className="text-blue-600 font-serif italic text-sm">fx</div>
 
           {/* Formula bar input */}
-          <div className="flex-1 bg-[#090A0F] border border-[#1F2238] rounded-lg px-2.5 py-1 text-white font-mono text-xs truncate">
+          <div className="flex-1 bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-slate-800 font-mono text-xs truncate shadow-2xs">
             {isEditing ? editValue : activeCell ? String(filteredRows[activeCell.rowIndex]?.[activeCell.colKey] ?? '') : 'คลิกเลือกช่องตารางด้านล่างเพื่อพิมพ์แก้ไขได้ทันที'}
           </div>
         </div>
 
         {/* Quick Calculations & Statistics badge */}
-        <div className="flex items-center gap-2 shrink-0 text-[11px] text-[#A1A1AA]">
-          <span className="font-mono bg-[#090A0F] px-2 py-0.5 rounded border border-[#1F2238]">
-            จำนวน: <strong className="text-white">{stats.totalRows}</strong> แถว
+        <div className="flex items-center gap-2 shrink-0 text-[11px] text-slate-600">
+          <span className="font-mono bg-white px-2 py-0.5 rounded border border-slate-200">
+            จำนวน: <strong className="text-slate-900">{stats.totalRows}</strong> แถว
           </span>
-          <span className="font-mono bg-[#090A0F] px-2 py-0.5 rounded border border-[#1F2238] hidden sm:inline">
-            TMP เฉลี่ย: <strong className="text-white">{formatNumber(stats.avgTmp, 3)}</strong> bar
+          <span className="font-mono bg-white px-2 py-0.5 rounded border border-slate-200 hidden sm:inline">
+            TMP เฉลี่ย: <strong className="text-slate-900">{formatNumber(stats.avgTmp, 3)}</strong> bar
           </span>
-          <span className="font-mono bg-[#090A0F] px-2 py-0.5 rounded border border-[#1F2238] hidden sm:inline">
-            Flux เฉลี่ย: <strong className="text-[#8B5CF6]">{formatNumber(stats.avgFlux, 1)}</strong> LMH
+          <span className="font-mono bg-white px-2 py-0.5 rounded border border-slate-200 hidden sm:inline">
+            Flux เฉลี่ย: <strong className="text-blue-700">{formatNumber(stats.avgFlux, 1)}</strong> LMH
           </span>
         </div>
       </div>
 
       {/* Editable Grid View */}
-      <div className="overflow-x-auto overflow-y-auto max-h-[620px] divide-y divide-[#1F2238] select-none bg-[#13141F]">
+      <div className="overflow-x-auto overflow-y-auto max-h-[620px] divide-y divide-slate-200 select-none bg-white">
         <table className="w-full text-xs text-left border-collapse font-sans min-w-[1100px]">
-          <thead className="bg-[#090A0F] text-[#A1A1AA] font-semibold sticky top-0 z-20 shadow-md">
-            <tr className="border-b border-[#1F2238] divide-x divide-[#1F2238] text-center">
-              <th className="py-2.5 px-2 w-12 bg-[#090A0F]">
+          <thead className="bg-slate-100 text-slate-700 font-semibold sticky top-0 z-20 shadow-xs">
+            <tr className="border-b border-slate-200 divide-x divide-slate-200 text-center">
+              <th className="py-2.5 px-2 w-12 bg-slate-100">
                 <input
                   type="checkbox"
                   checked={selectedRowIds.size === filteredRows.length && filteredRows.length > 0}
                   onChange={handleToggleSelectAll}
-                  className="rounded border-[#1F2238] text-[#8B5CF6] focus:ring-[#8B5CF6] cursor-pointer"
+                  className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                   title="เลือกทุกแถว"
                 />
               </th>
-              <th className="py-2.5 px-2 w-12 bg-[#090A0F] font-mono text-[#A1A1AA]">#</th>
-              <th className="py-2.5 px-3 min-w-36 text-left text-white">วันและเวลา (Date / Time)</th>
+              <th className="py-2.5 px-2 w-12 bg-slate-100 font-mono text-slate-500">#</th>
+              <th className="py-2.5 px-3 min-w-36 text-left text-slate-900">วันและเวลา (Date / Time)</th>
 
               {/* UF Units Header Group */}
-              <th colSpan={3} className="py-1 px-2 bg-[#8B5CF6]/15 border-b border-[#8B5CF6]/30 text-[#8B5CF6]">
+              <th colSpan={3} className="py-1 px-2 bg-blue-50 border-b border-blue-200 text-blue-800 font-bold">
                 UF No.1
               </th>
-              <th colSpan={3} className="py-1 px-2 bg-[#EC4899]/15 border-b border-[#EC4899]/30 text-[#EC4899]">
+              <th colSpan={3} className="py-1 px-2 bg-amber-50 border-b border-amber-200 text-amber-800 font-bold">
                 UF No.2
               </th>
-              <th colSpan={3} className="py-1 px-2 bg-[#06B6D4]/15 border-b border-[#06B6D4]/30 text-[#06B6D4]">
+              <th colSpan={3} className="py-1 px-2 bg-emerald-50 border-b border-emerald-200 text-emerald-800 font-bold">
                 UF No.3
               </th>
-              <th colSpan={3} className="py-1 px-2 bg-[#10B981]/15 border-b border-[#10B981]/30 text-[#10B981]">
+              <th colSpan={3} className="py-1 px-2 bg-purple-50 border-b border-purple-200 text-purple-800 font-bold">
                 UF No.4
               </th>
-              <th colSpan={3} className="py-1 px-2 bg-[#F59E0B]/15 border-b border-[#F59E0B]/30 text-[#F59E0B]">
+              <th colSpan={3} className="py-1 px-2 bg-rose-50 border-b border-rose-200 text-rose-800 font-bold">
                 UF No.5
               </th>
 
-              <th className="py-2.5 px-2 w-20 bg-[#090A0F] text-[#A1A1AA]">จัดการ</th>
+              <th className="py-2.5 px-2 w-20 bg-slate-100 text-slate-700">จัดการ</th>
             </tr>
-            <tr className="border-b border-[#1F2238] divide-x divide-[#1F2238] text-[11px] text-[#A1A1AA]">
-              <th className="bg-[#090A0F]"></th>
-              <th className="bg-[#090A0F]"></th>
-              <th className="px-3 text-left font-normal text-[#71717A]">รูปแบบ: D/M/YY H:mm</th>
+            <tr className="border-b border-slate-200 divide-x divide-slate-200 text-[11px] text-slate-600">
+              <th className="bg-slate-100"></th>
+              <th className="bg-slate-100"></th>
+              <th className="px-3 text-left font-normal text-slate-500">รูปแบบ: D/M/YY H:mm</th>
 
               {/* Sub-headers for Unit 1 to 5 */}
-              <th className="py-1.5 px-2 bg-[#8B5CF6]/10 font-mono font-medium text-slate-300">TMP (bar)</th>
-              <th className="py-1.5 px-2 bg-[#8B5CF6]/10 font-mono font-medium text-slate-300">Flow (m³/h)</th>
-              <th className="py-1.5 px-2 bg-[#8B5CF6]/20 font-mono font-bold text-[#8B5CF6]" title="คำนวณอัตโนมัติ">Flux (LMH)</th>
+              <th className="py-1.5 px-2 bg-blue-50/50 font-mono font-medium text-slate-700">TMP (bar)</th>
+              <th className="py-1.5 px-2 bg-blue-50/50 font-mono font-medium text-slate-700">Flow (m³/h)</th>
+              <th className="py-1.5 px-2 bg-blue-100/60 font-mono font-bold text-blue-800" title="คำนวณอัตโนมัติ">Flux (LMH)</th>
 
-              <th className="py-1.5 px-2 bg-[#EC4899]/10 font-mono font-medium text-slate-300">TMP (bar)</th>
-              <th className="py-1.5 px-2 bg-[#EC4899]/10 font-mono font-medium text-slate-300">Flow (m³/h)</th>
-              <th className="py-1.5 px-2 bg-[#EC4899]/20 font-mono font-bold text-[#EC4899]" title="คำนวณอัตโนมัติ">Flux (LMH)</th>
+              <th className="py-1.5 px-2 bg-amber-50/50 font-mono font-medium text-slate-700">TMP (bar)</th>
+              <th className="py-1.5 px-2 bg-amber-50/50 font-mono font-medium text-slate-700">Flow (m³/h)</th>
+              <th className="py-1.5 px-2 bg-amber-100/60 font-mono font-bold text-amber-800" title="คำนวณอัตโนมัติ">Flux (LMH)</th>
 
-              <th className="py-1.5 px-2 bg-[#06B6D4]/10 font-mono font-medium text-slate-300">TMP (bar)</th>
-              <th className="py-1.5 px-2 bg-[#06B6D4]/10 font-mono font-medium text-slate-300">Flow (m³/h)</th>
-              <th className="py-1.5 px-2 bg-[#06B6D4]/20 font-mono font-bold text-[#06B6D4]" title="คำนวณอัตโนมัติ">Flux (LMH)</th>
+              <th className="py-1.5 px-2 bg-emerald-50/50 font-mono font-medium text-slate-700">TMP (bar)</th>
+              <th className="py-1.5 px-2 bg-emerald-50/50 font-mono font-medium text-slate-700">Flow (m³/h)</th>
+              <th className="py-1.5 px-2 bg-emerald-100/60 font-mono font-bold text-emerald-800" title="คำนวณอัตโนมัติ">Flux (LMH)</th>
 
-              <th className="py-1.5 px-2 bg-[#10B981]/10 font-mono font-medium text-slate-300">TMP (bar)</th>
-              <th className="py-1.5 px-2 bg-[#10B981]/10 font-mono font-medium text-slate-300">Flow (m³/h)</th>
-              <th className="py-1.5 px-2 bg-[#10B981]/20 font-mono font-bold text-[#10B981]" title="คำนวณอัตโนมัติ">Flux (LMH)</th>
+              <th className="py-1.5 px-2 bg-purple-50/50 font-mono font-medium text-slate-700">TMP (bar)</th>
+              <th className="py-1.5 px-2 bg-purple-50/50 font-mono font-medium text-slate-700">Flow (m³/h)</th>
+              <th className="py-1.5 px-2 bg-purple-100/60 font-mono font-bold text-purple-800" title="คำนวณอัตโนมัติ">Flux (LMH)</th>
 
-              <th className="py-1.5 px-2 bg-[#F59E0B]/10 font-mono font-medium text-slate-300">TMP (bar)</th>
-              <th className="py-1.5 px-2 bg-[#F59E0B]/10 font-mono font-medium text-slate-300">Flow (m³/h)</th>
-              <th className="py-1.5 px-2 bg-[#F59E0B]/20 font-mono font-bold text-[#F59E0B]" title="คำนวณอัตโนมัติ">Flux (LMH)</th>
+              <th className="py-1.5 px-2 bg-rose-50/50 font-mono font-medium text-slate-700">TMP (bar)</th>
+              <th className="py-1.5 px-2 bg-rose-50/50 font-mono font-medium text-slate-700">Flow (m³/h)</th>
+              <th className="py-1.5 px-2 bg-rose-100/60 font-mono font-bold text-rose-800" title="คำนวณอัตโนมัติ">Flux (LMH)</th>
 
-              <th className="bg-[#090A0F]"></th>
+              <th className="bg-slate-100"></th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-[#1F2238] bg-[#13141F]">
+          <tbody className="divide-y divide-slate-200 bg-white">
             {filteredRows.map((row, rIdx) => {
               const isRowSelected = selectedRowIds.has(row.id);
               return (
                 <tr
                   key={row.id}
-                  className={`divide-x divide-[#1F2238] hover:bg-[#191B29] transition-colors ${
-                    isRowSelected ? 'bg-[#8B5CF6]/20' : rIdx % 2 === 1 ? 'bg-[#0F101A]' : 'bg-[#13141F]'
+                  className={`divide-x divide-slate-200 hover:bg-slate-50 transition-colors ${
+                    isRowSelected ? 'bg-blue-50' : rIdx % 2 === 1 ? 'bg-slate-50/50' : 'bg-white'
                   }`}
                 >
                   {/* Select row checkbox */}
-                  <td className="py-1.5 px-2 text-center bg-[#090A0F]/60">
+                  <td className="py-1.5 px-2 text-center bg-slate-50/60">
                     <input
                       type="checkbox"
                       checked={isRowSelected}
                       onChange={() => handleToggleSelectRow(row.id)}
-                      className="rounded border-[#1F2238] text-[#8B5CF6] focus:ring-[#8B5CF6] cursor-pointer"
+                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                     />
                   </td>
 
                   {/* Row index */}
-                  <td className="py-1.5 px-2 text-center font-mono text-[#A1A1AA] bg-[#090A0F]/60 text-[11px]">
+                  <td className="py-1.5 px-2 text-center font-mono text-slate-500 bg-slate-50/60 text-[11px]">
                     {rIdx + 1}
                   </td>
 
@@ -791,7 +790,7 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
                     handleKeyDown,
                     commitCellEdit,
                     editInputRef,
-                    'text-left font-mono font-medium text-white'
+                    'text-left font-mono font-medium text-slate-800'
                   )}
 
                   {/* UF No.1 */}
@@ -821,9 +820,9 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
                     handleKeyDown,
                     commitCellEdit,
                     editInputRef,
-                    'text-right font-mono text-[#A1A1AA]'
+                    'text-right font-mono text-slate-600'
                   )}
-                  <td className="py-1.5 px-2.5 text-right font-mono font-bold text-[#8B5CF6] bg-[#8B5CF6]/5">
+                  <td className="py-1.5 px-2.5 text-right font-mono font-bold text-blue-700 bg-blue-50/30">
                     {formatNumber(calculateFlux(row.u1_flow), 1)}
                   </td>
 
@@ -854,9 +853,9 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
                     handleKeyDown,
                     commitCellEdit,
                     editInputRef,
-                    'text-right font-mono text-[#A1A1AA]'
+                    'text-right font-mono text-slate-600'
                   )}
-                  <td className="py-1.5 px-2.5 text-right font-mono font-bold text-[#EC4899] bg-[#EC4899]/5">
+                  <td className="py-1.5 px-2.5 text-right font-mono font-bold text-amber-700 bg-amber-50/30">
                     {formatNumber(calculateFlux(row.u2_flow), 1)}
                   </td>
 
@@ -887,9 +886,9 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
                     handleKeyDown,
                     commitCellEdit,
                     editInputRef,
-                    'text-right font-mono text-[#A1A1AA]'
+                    'text-right font-mono text-slate-600'
                   )}
-                  <td className="py-1.5 px-2.5 text-right font-mono font-bold text-[#06B6D4] bg-[#06B6D4]/5">
+                  <td className="py-1.5 px-2.5 text-right font-mono font-bold text-emerald-700 bg-emerald-50/30">
                     {formatNumber(calculateFlux(row.u3_flow), 1)}
                   </td>
 
@@ -920,9 +919,9 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
                     handleKeyDown,
                     commitCellEdit,
                     editInputRef,
-                    'text-right font-mono text-[#A1A1AA]'
+                    'text-right font-mono text-slate-600'
                   )}
-                  <td className="py-1.5 px-2.5 text-right font-mono font-bold text-[#10B981] bg-[#10B981]/5">
+                  <td className="py-1.5 px-2.5 text-right font-mono font-bold text-purple-700 bg-purple-50/30">
                     {formatNumber(calculateFlux(row.u4_flow), 1)}
                   </td>
 
@@ -953,19 +952,19 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
                     handleKeyDown,
                     commitCellEdit,
                     editInputRef,
-                    'text-right font-mono text-[#A1A1AA]'
+                    'text-right font-mono text-slate-600'
                   )}
-                  <td className="py-1.5 px-2.5 text-right font-mono font-bold text-[#F59E0B] bg-[#F59E0B]/5">
+                  <td className="py-1.5 px-2.5 text-right font-mono font-bold text-rose-700 bg-rose-50/30">
                     {formatNumber(calculateFlux(row.u5_flow), 1)}
                   </td>
 
                   {/* Action cell */}
-                  <td className="py-1.5 px-2 text-center bg-[#090A0F]/60">
+                  <td className="py-1.5 px-2 text-center bg-slate-50/60">
                     <div className="flex items-center justify-center gap-1">
                       <button
                         type="button"
                         onClick={() => handleDuplicateRow(row.id)}
-                        className="p-1 text-[#A1A1AA] hover:text-[#8B5CF6] hover:bg-[#8B5CF6]/10 rounded transition-colors"
+                        className="p-1 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
                         title="ทำซ้ำแถวนี้"
                       >
                         <Copy className="w-3.5 h-3.5" />
@@ -973,7 +972,7 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
                       <button
                         type="button"
                         onClick={() => handleDeleteRow(row.id)}
-                        className="p-1 text-[#A1A1AA] hover:text-rose-400 hover:bg-rose-500/10 rounded transition-colors"
+                        className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
                         title="ลบแถวนี้"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -988,9 +987,9 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
       </div>
 
       {/* Spreadsheet Bottom Footer */}
-      <div className="bg-[#090A0F] border-t border-[#1F2238] px-5 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs text-[#A1A1AA]">
+      <div className="bg-slate-50 border-t border-slate-200 px-5 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600">
         <div className="flex items-center gap-3">
-          <span className="font-medium text-white">
+          <span className="font-semibold text-slate-900">
             📊 รวมทั้งหมด: <strong>{rows.length}</strong> แถว
           </span>
           <span>·</span>
@@ -998,7 +997,7 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
             พื้นที่ผิวรวมคำนวณ: <strong>{totalArea.toLocaleString()}</strong> m²
           </span>
           <span>·</span>
-          <span className="text-[11px] text-[#A1A1AA]">
+          <span className="text-[11px] text-slate-500">
             ดับเบิ้ลคลิกหรือคลิกช่องเพื่อเริ่มพิมพ์แก้ไข | กด Enter เพื่อไปแถวถัดไป | กด Tab เพื่อไปคอลัมน์ถัดไป
           </span>
         </div>
@@ -1007,7 +1006,7 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
           <button
             type="button"
             onClick={handleSaveAndApply}
-            className="px-4 py-1.5 bg-gradient-to-r from-[#8B5CF6] to-[#EC4899] hover:opacity-95 text-white font-bold rounded-lg shadow-md shadow-[#8B5CF6]/30 transition-all flex items-center gap-1.5 cursor-pointer"
+            className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-sm shadow-blue-500/20 transition-all flex items-center gap-1.5 cursor-pointer"
           >
             <Check className="w-3.5 h-3.5" />
             <span>บันทึกการแก้ไขเข้าแดชบอร์ด</span>
@@ -1017,7 +1016,7 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#13141F] text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-xs border border-[#8B5CF6]/50 animate-bounce backdrop-blur-md">
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 text-xs border border-slate-700 animate-fade-in">
           <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span>{toastMessage}</span>
         </div>
@@ -1025,24 +1024,24 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
 
       {/* Modal: Quick Paste from Clipboard */}
       {isPasteModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#13141F] rounded-2xl shadow-2xl border border-[#1F2238] w-full max-w-2xl overflow-hidden flex flex-col text-white">
-            <div className="bg-[#090A0F] border-b border-[#1F2238] px-6 py-4 flex items-center justify-between">
-              <div className="flex items-center gap-2 font-bold text-sm">
-                <ClipboardPaste className="w-5 h-5 text-[#8B5CF6]" />
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden flex flex-col text-slate-800">
+            <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+              <div className="flex items-center gap-2 font-bold text-sm text-slate-900">
+                <ClipboardPaste className="w-5 h-5 text-blue-600" />
                 <span>วางข้อมูลจาก Excel / Google Sheets (Paste Data)</span>
               </div>
               <button
                 type="button"
                 onClick={() => setIsPasteModalOpen(false)}
-                className="text-[#A1A1AA] hover:text-white"
+                className="text-slate-400 hover:text-slate-700"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="p-6 space-y-4 text-xs text-[#A1A1AA]">
-              <p className="leading-relaxed text-white">
+            <div className="p-6 space-y-4 text-xs text-slate-600">
+              <p className="leading-relaxed text-slate-800">
                 คัดลอกตารางจากโปรแกรม <strong>Microsoft Excel</strong> หรือ <strong>Google Sheets</strong> (รวมหัวตารางหรือเฉพาะข้อมูล) แล้วกด <strong>Ctrl+V</strong> วางในกล่องข้อความด้านล่างนี้:
               </p>
 
@@ -1051,21 +1050,21 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
                 onChange={e => setPasteRawText(e.target.value)}
                 placeholder={`ตัวอย่างที่คัดลอกมาจาก Excel:\n1/7/25 0:00\t0.0918\t44.66\t0.0633\t45.88\t-0.0349\t2.57\t0.0211\t42.81\t0.0287\t40.26\n1/7/25 2:24\t0.0897\t43.39\t0.0599\t44.45\t-0.0349\t2.56\t0.0192\t42.06\t0.0453\t40.62`}
                 rows={8}
-                className="w-full bg-[#090A0F] border border-[#1F2238] rounded-xl p-3 font-mono text-xs text-white focus:outline-hidden focus:ring-1 focus:ring-[#8B5CF6] focus:border-[#8B5CF6]"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 font-mono text-xs text-slate-900 focus:outline-hidden focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
               />
 
-              <div className="bg-[#090A0F] border border-[#1F2238] rounded-xl p-3 text-[11px] text-[#A1A1AA] space-y-1">
-                <div className="font-semibold text-white">ลำดับคอลัมน์มาตรฐาน:</div>
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-[11px] text-slate-600 space-y-1">
+                <div className="font-semibold text-slate-900">ลำดับคอลัมน์มาตรฐาน:</div>
                 <div>คอลัมน์ 1: วันที่และเวลา (Date / Time)</div>
                 <div>คอลัมน์ 2-11: UF-1 TMP, UF-1 Flow, UF-2 TMP, UF-2 Flow, ..., UF-5 Flow</div>
               </div>
             </div>
 
-            <div className="bg-[#090A0F] border-t border-[#1F2238] px-6 py-3.5 flex items-center justify-end gap-2 text-xs">
+            <div className="bg-slate-50 border-t border-slate-200 px-6 py-3.5 flex items-center justify-end gap-2 text-xs">
               <button
                 type="button"
                 onClick={() => setIsPasteModalOpen(false)}
-                className="px-4 py-2 bg-[#1F2238] hover:bg-[#272B47] text-white rounded-xl font-medium cursor-pointer"
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-medium cursor-pointer"
               >
                 ยกเลิก
               </button>
@@ -1073,7 +1072,7 @@ export const ExcelOnlineEditor: React.FC<ExcelOnlineEditorProps> = ({
                 type="button"
                 onClick={handleApplyPasteText}
                 disabled={!pasteRawText.trim()}
-                className="px-4 py-2 bg-gradient-to-r from-[#8B5CF6] to-[#EC4899] hover:opacity-95 disabled:opacity-50 text-white font-bold rounded-xl shadow-md shadow-[#8B5CF6]/30 transition-all cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold rounded-xl shadow-md shadow-blue-500/20 transition-all cursor-pointer flex items-center gap-1.5"
               >
                 <Check className="w-4 h-4" />
                 <span>เพิ่มข้อมูลเข้าตาราง</span>
@@ -1108,8 +1107,8 @@ function renderEditableCell(
       onClick={() => handleCellClick(rowIndex, colKey)}
       className={`py-1.5 px-2.5 cursor-pointer relative font-mono text-xs transition-all ${extraClass} ${
         isSelected
-          ? 'ring-2 ring-[#8B5CF6] ring-inset bg-[#8B5CF6]/20 text-white z-10'
-          : 'hover:bg-[#191B29]'
+          ? 'ring-2 ring-blue-600 ring-inset bg-blue-50 text-slate-900 z-10'
+          : 'hover:bg-slate-50'
       }`}
     >
       {isSelected && isEditing ? (
@@ -1120,12 +1119,12 @@ function renderEditableCell(
           onChange={e => setEditValue(e.target.value)}
           onKeyDown={handleKeyDown}
           onBlur={commitCellEdit}
-          className="w-full bg-[#090A0F] border border-[#8B5CF6] rounded px-1.5 py-0.5 text-xs text-white font-mono focus:outline-hidden shadow-xs"
+          className="w-full bg-white border border-blue-600 rounded px-1.5 py-0.5 text-xs text-slate-900 font-mono focus:outline-hidden shadow-2xs"
         />
       ) : (
         <span className="block truncate">
           {value === null || value === undefined ? (
-            <span className="text-[#52525B]">-</span>
+            <span className="text-slate-300">-</span>
           ) : typeof value === 'number' ? (
             colKey.includes('tmp') ? value.toFixed(4) : value.toFixed(2)
           ) : (
@@ -1139,11 +1138,11 @@ function renderEditableCell(
 
 // Visual color tint based on TMP severity
 function getTmpCellClass(tmp: number | null | undefined, params: MembraneParameters): string {
-  if (tmp === null || tmp === undefined || isNaN(tmp)) return 'text-right font-mono text-[#52525B]';
-  if (tmp >= params.criticalTmp) return 'text-right font-mono font-bold text-rose-400 bg-rose-500/15';
-  if (tmp >= params.warningTmp) return 'text-right font-mono font-bold text-amber-400 bg-amber-500/15';
-  if (tmp < 0) return 'text-right font-mono text-[#A1A1AA] italic bg-[#1F2238]/30';
-  return 'text-right font-mono text-white';
+  if (tmp === null || tmp === undefined || isNaN(tmp)) return 'text-right font-mono text-slate-400';
+  if (tmp >= params.criticalTmp) return 'text-right font-mono font-bold text-rose-700 bg-rose-50';
+  if (tmp >= params.warningTmp) return 'text-right font-mono font-bold text-amber-700 bg-amber-50';
+  if (tmp < 0) return 'text-right font-mono text-slate-500 italic bg-slate-50';
+  return 'text-right font-mono text-slate-800';
 }
 
 // Convert dataset to table rows
