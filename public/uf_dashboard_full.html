@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UF Fouling TMP. Control Dashboard - WHA-UP Analysis (Full Edition)</title>
+  <!-- Tailwind CSS & Chart.js via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Google Fonts: Prompt & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Prompt', system-ui, -apple-system, sans-serif; }
+    .font-mono { font-family: 'Plus Jakarta Sans', monospace; }
+    @keyframes pulse-soft {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    .animate-pulse-soft { animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+  <!-- Header Navigation -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-blue-500/20">
+          UF
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2 flex-wrap">
+              <span>UF Fouling TMP. Control Dashboard</span>
+              <span class="text-blue-600 font-semibold">WHA-UP Analysis</span>
+            </h1>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-slate-500 mt-0.5 flex-wrap">
+            <span class="text-blue-600 font-medium">Developed by: Utility Operation Engineering UOP Team</span>
+            <span>·</span>
+            <span>5 ยูนิตเมมเบรน (UF No.1 - No.5)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl text-xs font-semibold overflow-x-auto">
+        <button onclick="switchTab('dashboard')" id="tabBtnDashboard" class="tab-btn px-3 py-1.5 rounded-lg transition-all bg-white text-blue-700 shadow-xs font-bold flex items-center gap-1.5 cursor-pointer">
+          📊 แดชบอร์ด TMP &amp; Flux
+        </button>
+        <button onclick="switchTab('excel')" id="tabBtnExcel" class="tab-btn px-3 py-1.5 rounded-lg transition-all text-slate-600 hover:text-emerald-800 flex items-center gap-1.5 cursor-pointer">
+          📑 Excel Online (แก้ไขสด)
+        </button>
+        <button onclick="switchTab('animation')" id="tabBtnAnimation" class="tab-btn px-3 py-1.5 rounded-lg transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1.5 cursor-pointer">
+          💧 แอนิเมชันฟิสิกส์การอุดตัน
+        </button>
+        <button onclick="switchTab('sop')" id="tabBtnSop" class="tab-btn px-3 py-1.5 rounded-lg transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1.5 cursor-pointer">
+          📖 คู่มือวิศวกรรม &amp; SOP
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Notification Toast -->
+  <div id="toastNotification" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-2.5 rounded-xl text-xs shadow-xl flex items-center gap-2 border border-slate-700 hidden">
+    <span class="text-emerald-400 font-bold">✓</span>
+    <span id="toastMessage">บันทึกข้อมูลเรียบร้อย</span>
+  </div>
+
+  <!-- Main Content Body -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: DASHBOARD VIEW -->
+    <!-- ========================================== -->
+    <section id="tabContentDashboard" class="space-y-6">
+
+      <!-- Active Dataset Info Banner -->
+      <div class="bg-white border border-slate-200 rounded-xl px-4 py-3 flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs shadow-2xs">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-100 animate-pulse"></span>
+          <span class="font-semibold text-slate-800">ชุดข้อมูลที่กำลังวิเคราะห์:</span>
+          <span class="font-semibold px-2.5 py-1 rounded-lg border text-xs flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border-emerald-300">
+            SCADA_WHA-UP_Format (43 รอบการกรอง · 1-5 ก.ค. 2568)
+          </span>
+          <span class="text-[11px] text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+            ✓ แสดงผลตามข้อมูลที่แนบไปเท่านั้น (<span id="totalPointsBadge">43</span> จุด · UF No.1 - No.5)
+          </span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="switchTab('excel')" class="px-3 py-1.5 rounded-lg font-bold text-xs transition-all flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs cursor-pointer">
+            ✏️ แก้ไขใน Excel Online
+          </button>
+          <button onclick="resetToOriginalData()" class="px-3 py-1.5 rounded-lg font-semibold text-xs transition-all flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs cursor-pointer">
+            ↺ คืนค่าข้อมูลแนบต้นฉบับ
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Summary Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-5 gap-3.5" id="kpiCardsContainer">
+        <!-- Injected via JS -->
+      </div>
+
+      <!-- Filter & Controls Toolbar -->
+      <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-2xs space-y-4">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <!-- Quick Day Selectors -->
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <span class="font-bold text-slate-700">ตัวกรองช่วงเวลา:</span>
+            <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg">
+              <button onclick="filterByDate('all')" id="btnFilterAll" class="filter-btn px-2.5 py-1 rounded font-bold bg-emerald-600 text-white shadow-xs cursor-pointer">
+                ข้อมูลแนบทั้งหมด (43 จุด)
+              </button>
+              <button onclick="filterByDate('2025-07-01')" id="btnFilterDay1" class="filter-btn px-2 py-1 rounded font-medium text-slate-600 hover:bg-white cursor-pointer">1 ก.ค.</button>
+              <button onclick="filterByDate('2025-07-02')" id="btnFilterDay2" class="filter-btn px-2 py-1 rounded font-medium text-slate-600 hover:bg-white cursor-pointer">2 ก.ค.</button>
+              <button onclick="filterByDate('2025-07-03')" id="btnFilterDay3" class="filter-btn px-2 py-1 rounded font-medium text-slate-600 hover:bg-white cursor-pointer">3 ก.ค.</button>
+              <button onclick="filterByDate('2025-07-04')" id="btnFilterDay4" class="filter-btn px-2 py-1 rounded font-medium text-slate-600 hover:bg-white cursor-pointer">4 ก.ค.</button>
+              <button onclick="filterByDate('2025-07-05')" id="btnFilterDay5" class="filter-btn px-2 py-1 rounded font-medium text-slate-600 hover:bg-white cursor-pointer">5 ก.ค.</button>
+            </div>
+          </div>
+
+          <!-- Parameter Config & Print -->
+          <div class="flex items-center gap-2 flex-wrap text-xs">
+            <button onclick="toggleParamPanel()" class="px-3 py-1.5 font-medium rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer">
+              ⚙️ พารามิเตอร์เกณฑ์
+            </button>
+            <button onclick="exportTableToCSV()" class="px-3 py-1.5 font-medium rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow-xs cursor-pointer">
+              📥 ส่งออกไฟล์ CSV
+            </button>
+            <button onclick="window.print()" class="px-3 py-1.5 font-bold rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white shadow-xs cursor-pointer">
+              🖨️ พิมพ์รายงาน / PDF
+            </button>
+          </div>
+        </div>
+
+        <!-- Collapsible Parameters Settings Panel -->
+        <div id="paramConfigPanel" class="hidden pt-4 border-t border-slate-100 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+          <div>
+            <label class="text-slate-500 block mb-1">จำนวนโมดูลต่อยูนิต</label>
+            <input type="number" id="inputModules" value="22" onchange="updateParams()" class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1 text-slate-800">
+          </div>
+          <div>
+            <label class="text-slate-500 block mb-1">พื้นที่ต่อโมดูล (m²)</label>
+            <input type="number" id="inputArea" value="99" onchange="updateParams()" class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1 text-slate-800">
+          </div>
+          <div>
+            <label class="text-slate-500 block mb-1">เกณฑ์เตือน TMP (bar)</label>
+            <input type="number" step="0.05" id="inputWarningTmp" value="0.40" onchange="updateParams()" class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1 text-slate-800">
+          </div>
+          <div>
+            <label class="text-slate-500 block mb-1">เกณฑ์วิกฤต TMP (bar)</label>
+            <input type="number" step="0.05" id="inputCriticalTmp" value="0.60" onchange="updateParams()" class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1 text-slate-800">
+          </div>
+        </div>
+      </div>
+
+      <!-- Multi-Unit TMP Comparison Trend Chart -->
+      <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <span>แนวโน้มค่า TMP เปรียบเทียบทุกยูนิต (UF No.1 - No.5)</span>
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">
+              เส้นประสีส้ม = เกณฑ์เฝ้าระวัง (<span id="txtWarnTmp">0.40</span> bar) · เส้นประสีแดง = เกณฑ์วิกฤต (<span id="txtCritTmp">0.60</span> bar)
+            </p>
+          </div>
+        </div>
+        <div class="relative w-full h-[320px]">
+          <canvas id="multiUnitChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Single Unit Detailed Breakdown Chart -->
+      <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-sm font-bold text-slate-900">
+              การวิเคราะห์เชิงลึก: ค่า TMP และอัตราการไหล (Flow) รายยูนิต
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">แกนซ้าย: TMP (bar) · แกนขวา: Flow Rate (m³/h)</p>
+          </div>
+          <div class="flex items-center gap-1.5" id="unitTabsRow">
+            <button onclick="selectUnit(0)" id="btnUnit0" class="unit-btn px-3 py-1 rounded-lg text-xs font-bold bg-blue-600 text-white cursor-pointer">UF No.1</button>
+            <button onclick="selectUnit(1)" id="btnUnit1" class="unit-btn px-3 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 cursor-pointer">UF No.2</button>
+            <button onclick="selectUnit(2)" id="btnUnit2" class="unit-btn px-3 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 cursor-pointer">UF No.3</button>
+            <button onclick="selectUnit(3)" id="btnUnit3" class="unit-btn px-3 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 cursor-pointer">UF No.4</button>
+            <button onclick="selectUnit(4)" id="btnUnit4" class="unit-btn px-3 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 cursor-pointer">UF No.5</button>
+          </div>
+        </div>
+        <div class="relative w-full h-[300px]">
+          <canvas id="singleUnitChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Raw Data Table (43 rows) -->
+      <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm space-y-0">
+        <div class="px-5 py-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 bg-slate-50">
+          <div>
+            <h3 class="text-sm font-bold text-slate-900">ตารางข้อมูลดิบและรอบการกรอง SCADA WHA-UP</h3>
+            <p class="text-xs text-slate-500 mt-0.5">บันทึกค่าทุก 2 ชั่วโมง 24 นาที ระหว่าง 1/7/25 - 5/7/25</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="text" id="tableSearchInput" onkeyup="filterTableSearch()" placeholder="ค้นหาวันที่ / ค่า..." class="bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-700">
+            <button onclick="switchTab('excel')" class="px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs">
+              แก้ไขใน Excel Online ↗
+            </button>
+          </div>
+        </div>
+        <div class="overflow-x-auto max-h-[460px] divide-y divide-slate-100 text-xs font-mono">
+          <table class="w-full text-left" id="mainDataTable">
+            <thead class="bg-slate-100 text-slate-700 sticky top-0 border-b border-slate-200">
+              <tr>
+                <th class="py-2.5 px-3">#</th>
+                <th class="py-2.5 px-3">วันและเวลา (Date/Time)</th>
+                <th class="py-2.5 px-3 text-right">UF-1 TMP</th>
+                <th class="py-2.5 px-3 text-right">UF-1 Flow</th>
+                <th class="py-2.5 px-3 text-right text-sky-700 font-bold">UF-1 Flux</th>
+                <th class="py-2.5 px-3 text-right">UF-2 TMP</th>
+                <th class="py-2.5 px-3 text-right">UF-2 Flow</th>
+                <th class="py-2.5 px-3 text-right text-sky-700 font-bold">UF-2 Flux</th>
+                <th class="py-2.5 px-3 text-right">UF-3 TMP</th>
+                <th class="py-2.5 px-3 text-right">UF-3 Flow</th>
+                <th class="py-2.5 px-3 text-right text-sky-700 font-bold">UF-3 Flux</th>
+                <th class="py-2.5 px-3 text-right">UF-4 TMP</th>
+                <th class="py-2.5 px-3 text-right">UF-4 Flow</th>
+                <th class="py-2.5 px-3 text-right text-sky-700 font-bold">UF-4 Flux</th>
+                <th class="py-2.5 px-3 text-right">UF-5 TMP</th>
+                <th class="py-2.5 px-3 text-right">UF-5 Flow</th>
+                <th class="py-2.5 px-3 text-right text-sky-700 font-bold">UF-5 Flux</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 bg-white" id="mainDataTableBody">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: EXCEL ONLINE SPREADSHEET EDITOR -->
+    <!-- ========================================== -->
+    <section id="tabContentExcel" class="hidden space-y-4">
+      <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+        <!-- Excel Ribbon -->
+        <div class="bg-emerald-800 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 shadow-md">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-emerald-600 flex items-center justify-center font-bold text-base shadow-inner">
+              📊
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-base font-bold text-white">Excel Online – นำเข้าและแก้ไขข้อมูลเยื่อกรอง UF</h2>
+                <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-700 text-emerald-100 border border-emerald-600">
+                  Live Spreadsheet Grid
+                </span>
+              </div>
+              <p class="text-xs text-emerald-200">
+                ดับเบิ้ลคลิกช่องตารางเพื่อแก้ไขค่า TMP / Flow · กด Enter เพื่อเลื่อนลง · กดปุ่มบันทึกเพื่ออัปเดตเข้าแดชบอร์ดทันที
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="saveExcelOnlineChanges()" class="px-4 py-2 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-bold text-xs rounded-xl shadow-md transition-all cursor-pointer">
+              💾 บันทึก &amp; นำเข้าวิเคราะห์ผลทันที
+            </button>
+            <button onclick="switchTab('dashboard')" class="px-3 py-2 bg-emerald-700 hover:bg-emerald-600 text-white font-medium text-xs rounded-xl cursor-pointer">
+              ดูแดชบอร์ด ↗
+            </button>
+          </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="bg-slate-50 border-b border-slate-200 px-5 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div class="flex items-center gap-2 flex-wrap">
+            <button onclick="addSpreadsheetRow()" class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-lg font-semibold cursor-pointer shadow-2xs">
+              ➕ เพิ่มแถวใหม่
+            </button>
+            <button onclick="deleteLastSpreadsheetRow()" class="px-3 py-1.5 bg-white hover:bg-red-50 text-red-600 border border-slate-300 rounded-lg font-semibold cursor-pointer shadow-2xs">
+              🗑️ ลบแถวล่าสุด
+            </button>
+            <button onclick="exportTableToCSV()" class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-lg font-semibold cursor-pointer shadow-2xs">
+              📥 ส่งออกไฟล์ .CSV
+            </button>
+            <button onclick="resetToOriginalData()" class="px-3 py-1.5 text-slate-600 hover:text-slate-900 rounded-lg cursor-pointer">
+              ↺ คืนค่าข้อมูลต้นฉบับ
+            </button>
+          </div>
+          <div class="text-[11px] text-slate-500 font-mono">
+            รวม: <strong id="spreadsheetRowCount" class="text-slate-800">43</strong> แถว
+          </div>
+        </div>
+
+        <!-- Spreadsheet Grid Table -->
+        <div class="overflow-x-auto max-h-[600px] divide-y divide-slate-200 text-xs font-mono">
+          <table class="w-full text-left border-collapse" id="spreadsheetTable">
+            <thead class="bg-slate-100 text-slate-700 sticky top-0 border-b border-slate-300">
+              <tr class="divide-x divide-slate-200 text-center">
+                <th class="py-2 px-2 bg-slate-200 w-12">#</th>
+                <th class="py-2 px-3 min-w-36 text-left">วันและเวลา (Date/Time)</th>
+                <th class="py-2 px-2 bg-blue-50">UF-1 TMP</th>
+                <th class="py-2 px-2 bg-blue-50">UF-1 Flow</th>
+                <th class="py-2 px-2 bg-amber-50">UF-2 TMP</th>
+                <th class="py-2 px-2 bg-amber-50">UF-2 Flow</th>
+                <th class="py-2 px-2 bg-emerald-50">UF-3 TMP</th>
+                <th class="py-2 px-2 bg-emerald-50">UF-3 Flow</th>
+                <th class="py-2 px-2 bg-red-50">UF-4 TMP</th>
+                <th class="py-2 px-2 bg-red-50">UF-4 Flow</th>
+                <th class="py-2 px-2 bg-purple-50">UF-5 TMP</th>
+                <th class="py-2 px-2 bg-purple-50">UF-5 Flow</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 bg-white" id="spreadsheetTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: FOULING PHYSICS SIMULATION -->
+    <!-- ========================================== -->
+    <section id="tabContentAnimation" class="hidden space-y-4">
+      <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">แอนิเมชันจำลองฟิสิกส์การอุดตันของเยื่อกรอง UF (Membrane Physics Simulator)</h2>
+            <p class="text-xs text-slate-500 mt-0.5">
+              แสดงการสะสมของชั้นเค้ก (Cake Layer), การอุดตันรูพรุน (Pore Blocking) และผลของการล้างย้อน (Backwash) / เคมี (EFM &amp; CIP)
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="triggerBackwashSim()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold cursor-pointer">
+              💧 จำลองล้างย้อน (Backwash)
+            </button>
+            <button onclick="triggerCipSim()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold cursor-pointer">
+              🧪 จำลอง CIP เคมี
+            </button>
+          </div>
+        </div>
+
+        <div class="relative w-full h-[360px] bg-slate-900 rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
+          <canvas id="physicsCanvas" class="w-full h-full"></canvas>
+          <div class="absolute bottom-3 left-4 bg-slate-950/80 px-3 py-1.5 rounded-lg text-[11px] text-slate-300 font-mono border border-slate-800">
+            สถานะ: <span id="simStatus" class="text-emerald-400 font-bold">กำลังกรองปกติ (Filtration Active)</span> ·
+            ความหนา Cake: <span id="cakeThicknessTxt" class="text-amber-400 font-bold">12%</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: SOP & ENGINEERING GUIDE -->
+    <!-- ========================================== -->
+    <section id="tabContentSop" class="hidden space-y-4">
+      <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-5">
+        <h2 class="text-base font-bold text-slate-900">คู่มือวิศวกรรมและการควบคุมกระบวนการ (Engineering SOP &amp; Operations Manual)</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2">
+            <h3 class="font-bold text-blue-900 text-sm">ข้อมูลจำเพาะระบบเมมเบรน (UF System Specifications)</h3>
+            <ul class="space-y-1.5 text-slate-700">
+              <li>• <strong>ผู้ผลิต / รุ่น:</strong> Hollow Fiber PVDF Ultrafiltration Membrane</li>
+              <li>• <strong>จำนวนโมดูลต่อยูนิต:</strong> 22 Modules/Unit</li>
+              <li>• <strong>พื้นที่ผิวเยื่อกรองต่อโมดูล:</strong> 99 m² (รวม 2,178 m²/Unit)</li>
+              <li>• <strong>ทิศทางการกรอง:</strong> Outside-to-Inside Filtration</li>
+              <li>• <strong>ช่วงฟลักซ์ออกแบบ (Design Flux):</strong> 15.0 – 25.0 LMH</li>
+            </ul>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2">
+            <h3 class="font-bold text-emerald-900 text-sm">เกณฑ์การควบคุมแรงดันข้ามเยื่อกรอง (TMP Thresholds)</h3>
+            <ul class="space-y-1.5 text-slate-700">
+              <li>• <strong>TMP สะอาดเริ่มต้น (Clean Baseline):</strong> 0.05 – 0.12 bar</li>
+              <li>• <strong>เกณฑ์เฝ้าระวัง (Warning Threshold):</strong> 0.40 bar (เตรียมแผนล้าง EFM)</li>
+              <li>• <strong>เกณฑ์วิกฤต (Critical Limit):</strong> 0.60 bar (ต้องหยุดเดินระบบเพื่อทำ CIP)</li>
+              <li>• <strong>แรงดันสูงสุดปลอดภัย (Max Safe Limit):</strong> 1.00 bar</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="border-t border-slate-200 pt-4 space-y-3 text-xs">
+          <h3 class="font-bold text-slate-900 text-sm">ขั้นตอนและโปรโตคอลการทำความสะอาด (Cleaning Protocol)</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg space-y-1">
+              <strong class="text-blue-900">1. การล้างย้อน (Backwash &amp; Air Scour)</strong>
+              <p class="text-slate-600 text-[11px] leading-relaxed">ทำทุก 30-60 นาที ฉีดน้ำย้อนทางความดัน 1.5-2.0 bar พร้อมเป่าฟองอากาศเพื่อขจัดอนุภาคสะสมภายนอกผิวเมมเบรน</p>
+            </div>
+            <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg space-y-1">
+              <strong class="text-amber-900">2. Enhanced Flux Maintenance (EFM)</strong>
+              <p class="text-slate-600 text-[11px] leading-relaxed">ทำเมื่อ TMP แตะ 0.40 bar หรือทุก 24-48 ชั่วโมง ใช้ NaOCl ความเข้มข้น 100-200 ppm แช่ 15-30 นาที</p>
+            </div>
+            <div class="p-3 bg-red-50 border border-red-200 rounded-lg space-y-1">
+              <strong class="text-red-900">3. Clean-in-Place (CIP แบบเต็มระบบ)</strong>
+              <p class="text-slate-600 text-[11px] leading-relaxed">ทำเมื่อ TMP แตะ 0.60 bar ล้างกรด Citric Acid 2% (pH 2.0) แช่ 2 ชม. แล้วตามด้วยด่าง NaOH (pH 11.5) แช่ 2 ชม.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-white border-t border-slate-200 py-5 text-center text-xs text-slate-500 mt-8">
+    <p>Developed by: Utility Operation Engineering UOP Team</p>
+    <p class="text-[11px] text-slate-400 mt-1">UF Membrane Fouling Control Dashboard (Complete Standalone Full Edition)</p>
+  </footer>
+
+  <!-- ========================================== -->
+  <!-- JAVASCRIPT CORE LOGIC -->
+  <!-- ========================================== -->
+  <script>
+    // ------------------------------------------
+    // 1. DATASET: 43 SCADA Cycles (1-5 ก.ค. 2568)
+    // ------------------------------------------
+    const initialTimeLabels = [
+      '01/07/2025 00:00', '01/07/2025 02:24', '01/07/2025 04:48', '01/07/2025 07:12', '01/07/2025 09:36',
+      '01/07/2025 12:00', '01/07/2025 14:24', '01/07/2025 16:48', '01/07/2025 19:12', '01/07/2025 21:36',
+      '02/07/2025 00:00', '02/07/2025 02:24', '02/07/2025 04:48', '02/07/2025 07:12', '02/07/2025 09:36',
+      '02/07/2025 12:00', '02/07/2025 14:24', '02/07/2025 16:48', '02/07/2025 19:12', '02/07/2025 21:36',
+      '03/07/2025 00:00', '03/07/2025 02:24', '03/07/2025 04:48', '03/07/2025 07:12', '03/07/2025 09:36',
+      '03/07/2025 12:00', '03/07/2025 14:24', '03/07/2025 16:48', '03/07/2025 19:12', '03/07/2025 21:36',
+      '04/07/2025 00:00', '04/07/2025 02:24', '04/07/2025 04:48', '04/07/2025 07:12', '04/07/2025 09:36',
+      '04/07/2025 12:00', '04/07/2025 14:24', '04/07/2025 16:48', '04/07/2025 19:12', '04/07/2025 21:36',
+      '05/07/2025 00:00', '05/07/2025 02:24', '05/07/2025 04:48'
+    ];
+
+    const initialTmp = [
+      [0.0918, 0.0897, 0.0895, 0.0903, 0.0898, 0.1719, 0.1191, 0.1130, 0.1084, 0.1077, 0.1065, 0.1064, 0.1054, 0.1042, 0.1039, 0.1037, 0.1034, 0.1029, 0.1026, 0.1017, 0.1010, 0.1009, 0.1007, 0.1006, 0.1002, 0.0998, 0.0994, 0.0988, 0.0985, 0.0981, 0.0978, 0.0975, 0.0971, 0.0968, 0.0965, 0.0960, 0.0957, 0.0954, 0.0950, 0.0947, 0.0944, 0.0940, 0.0938],
+      [0.0633, 0.0599, 0.0601, 0.0605, 0.0610, 0.0987, 0.0821, 0.0784, 0.0759, 0.0751, 0.0746, 0.0740, 0.0735, 0.0730, 0.0726, 0.0722, 0.0718, 0.0715, 0.0710, 0.0706, 0.0702, 0.0699, 0.0695, 0.0691, 0.0688, 0.0684, 0.0681, 0.0677, 0.0674, 0.0670, 0.0667, 0.0663, 0.0660, 0.0657, 0.0653, 0.0650, 0.0646, 0.0643, 0.0640, 0.0636, 0.0633, 0.0630, 0.0626],
+      [-0.0349, -0.0349, -0.0349, -0.0349, -0.0348, 0.0111, 0.0094, 0.0089, 0.0082, 0.0079, 0.0075, 0.0071, 0.0068, 0.0065, 0.0061, 0.0058, 0.0055, 0.0052, 0.0048, 0.0045, 0.0042, 0.0039, 0.0036, 0.0033, 0.0030, 0.0027, 0.0024, 0.0021, 0.0018, 0.0015, 0.0012, 0.0009, 0.0006, 0.0003, 0.0001, -0.0002, -0.0005, -0.0008, -0.0011, -0.0014, -0.0017, -0.0020, -0.0023],
+      [0.0211, 0.0192, 0.0188, 0.0185, 0.0182, 0.0618, 0.0432, 0.0410, 0.0395, 0.0388, 0.0382, 0.0377, 0.0371, 0.0366, 0.0361, 0.0356, 0.0351, 0.0347, 0.0342, 0.0337, 0.0333, 0.0328, 0.0324, 0.0319, 0.0315, 0.0311, 0.0306, 0.0302, 0.0298, 0.0294, 0.0289, 0.0285, 0.0281, 0.0277, 0.0273, 0.0269, 0.0265, 0.0261, 0.0257, 0.0253, 0.0250, 0.0246, 0.0242],
+      [0.0287, 0.0453, 0.0448, 0.0442, 0.0438, 0.0654, 0.0523, 0.0498, 0.0481, 0.0475, 0.0469, 0.0464, 0.0458, 0.0453, 0.0448, 0.0443, 0.0438, 0.0433, 0.0428, 0.0423, 0.0419, 0.0414, 0.0410, 0.0405, 0.0401, 0.0396, 0.0392, 0.0388, 0.0384, 0.0379, 0.0375, 0.0371, 0.0367, 0.0363, 0.0359, 0.0355, 0.0351, 0.0347, 0.0343, 0.0339, 0.0336, 0.0332, 0.0328]
+    ];
+
+    const initialFlow = [
+      [44.66, 43.39, 43.20, 43.50, 43.40, 89.26, 58.12, 55.40, 53.20, 52.80, 52.10, 51.80, 51.50, 50.90, 50.70, 50.50, 50.20, 49.80, 49.60, 49.20, 48.90, 48.70, 48.50, 48.20, 48.00, 47.70, 47.50, 47.20, 47.00, 46.70, 46.50, 46.30, 46.00, 45.80, 45.60, 45.30, 45.10, 44.90, 44.70, 44.40, 44.20, 44.00, 43.80],
+      [45.88, 44.45, 44.20, 44.60, 44.70, 75.07, 60.15, 57.80, 55.60, 55.10, 54.60, 54.10, 53.70, 53.20, 52.80, 52.40, 52.00, 51.70, 51.30, 50.90, 50.60, 50.30, 49.90, 49.60, 49.30, 49.00, 48.70, 48.40, 48.10, 47.80, 47.50, 47.20, 46.90, 46.70, 46.40, 46.10, 45.90, 45.60, 45.40, 45.10, 44.80, 44.60, 44.30],
+      [2.57, 2.56, 2.55, 2.56, 2.56, 35.44, 28.12, 26.50, 25.10, 24.80, 24.20, 23.80, 23.40, 22.90, 22.50, 22.20, 21.80, 21.50, 21.10, 20.80, 20.50, 20.20, 19.90, 19.60, 19.30, 19.00, 18.70, 18.50, 18.20, 18.00, 17.70, 17.50, 17.30, 17.00, 16.80, 16.60, 16.40, 16.20, 16.00, 15.80, 15.60, 15.40, 15.20],
+      [42.81, 42.06, 41.90, 42.10, 42.00, 53.52, 48.20, 46.50, 45.10, 44.70, 44.20, 43.80, 43.40, 43.00, 42.60, 42.30, 41.90, 41.60, 41.20, 40.90, 40.60, 40.30, 40.00, 39.70, 39.50, 39.20, 38.90, 38.70, 38.40, 38.20, 37.90, 37.70, 37.50, 37.20, 37.00, 36.80, 36.60, 36.40, 36.20, 35.90, 35.70, 35.50, 35.30],
+      [40.26, 40.62, 40.50, 40.70, 40.80, 68.59, 52.14, 50.20, 48.70, 48.20, 47.80, 47.30, 46.90, 46.50, 46.10, 45.70, 45.40, 45.00, 44.70, 44.30, 44.00, 43.70, 43.40, 43.10, 42.80, 42.50, 42.20, 41.90, 41.70, 41.40, 41.10, 40.90, 40.60, 40.40, 40.10, 39.90, 39.70, 39.40, 39.20, 39.00, 38.80, 38.50, 38.30]
+    ];
+
+    // Current State
+    let timeLabels = [...initialTimeLabels];
+    let tmpData = initialTmp.map(row => [...row]);
+    let flowData = initialFlow.map(row => [...row]);
+    let warningTmp = 0.40;
+    let criticalTmp = 0.60;
+    let modulesCount = 22;
+    let areaPerModule = 99;
+    let totalArea = modulesCount * areaPerModule;
+
+    const unitColors = ['#2563eb', '#d97706', '#16a34a', '#dc2626', '#9333ea'];
+    let selectedUnitIdx = 0;
+    let multiChartInstance = null;
+    let singleChartInstance = null;
+
+    // Toast helper
+    function showToast(msg) {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastMessage').innerText = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 3500);
+    }
+
+    // Tab Switching
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.className = 'tab-btn px-3 py-1.5 rounded-lg transition-all text-slate-600 hover:text-slate-900 cursor-pointer';
+      });
+      document.getElementById('tabContentDashboard').classList.add('hidden');
+      document.getElementById('tabContentExcel').classList.add('hidden');
+      document.getElementById('tabContentAnimation').classList.add('hidden');
+      document.getElementById('tabContentSop').classList.add('hidden');
+
+      if (tabId === 'dashboard') {
+        document.getElementById('tabBtnDashboard').className = 'tab-btn px-3 py-1.5 rounded-lg transition-all bg-white text-blue-700 shadow-xs font-bold cursor-pointer';
+        document.getElementById('tabContentDashboard').classList.remove('hidden');
+      } else if (tabId === 'excel') {
+        document.getElementById('tabBtnExcel').className = 'tab-btn px-3 py-1.5 rounded-lg transition-all bg-emerald-700 text-white shadow-xs font-bold cursor-pointer';
+        document.getElementById('tabContentExcel').classList.remove('hidden');
+        renderSpreadsheetTable();
+      } else if (tabId === 'animation') {
+        document.getElementById('tabBtnAnimation').className = 'tab-btn px-3 py-1.5 rounded-lg transition-all bg-white text-blue-700 shadow-xs font-bold cursor-pointer';
+        document.getElementById('tabContentAnimation').classList.remove('hidden');
+        startPhysicsSim();
+      } else if (tabId === 'sop') {
+        document.getElementById('tabBtnSop').className = 'tab-btn px-3 py-1.5 rounded-lg transition-all bg-white text-blue-700 shadow-xs font-bold cursor-pointer';
+        document.getElementById('tabContentSop').classList.remove('hidden');
+      }
+    }
+
+    // Toggle Params
+    function toggleParamPanel() {
+      const p = document.getElementById('paramConfigPanel');
+      p.classList.toggle('hidden');
+    }
+
+    function updateParams() {
+      modulesCount = Number(document.getElementById('inputModules').value) || 22;
+      areaPerModule = Number(document.getElementById('inputArea').value) || 99;
+      warningTmp = Number(document.getElementById('inputWarningTmp').value) || 0.40;
+      criticalTmp = Number(document.getElementById('inputCriticalTmp').value) || 0.60;
+      totalArea = modulesCount * areaPerModule;
+
+      document.getElementById('txtWarnTmp').innerText = warningTmp.toFixed(2);
+      document.getElementById('txtCritTmp').innerText = criticalTmp.toFixed(2);
+      refreshDashboard();
+      showToast('อัปเดตเกณฑ์พารามิเตอร์เรียบร้อย');
+    }
+
+    // ------------------------------------------
+    // 2. DASHBOARD RENDERING & CHARTS
+    // ------------------------------------------
+    function refreshDashboard() {
+      renderKPICards();
+      renderMultiChart();
+      renderSingleUnit(selectedUnitIdx);
+      renderDataTable(timeLabels);
+      document.getElementById('totalPointsBadge').innerText = timeLabels.length;
+    }
+
+    function renderKPICards() {
+      const container = document.getElementById('kpiCardsContainer');
+      container.innerHTML = '';
+
+      for (let u = 0; u < 5; u++) {
+        const curTmp = tmpData[u][tmpData[u].length - 1];
+        const maxTmp = Math.max(...tmpData[u]);
+        const flows = flowData[u];
+        const avgFlow = flows.reduce((a, b) => a + b, 0) / flows.length;
+        const avgFlux = (avgFlow / totalArea) * 1000;
+        const isCritical = curTmp >= criticalTmp;
+        const isWarning = curTmp >= warningTmp && !isCritical;
+        const statusClass = isCritical ? 'bg-red-50 border-red-300 text-red-700' : isWarning ? 'bg-amber-50 border-amber-300 text-amber-700' : 'bg-emerald-50 border-emerald-200 text-emerald-700';
+        const statusTxt = isCritical ? 'วิกฤต (CIP ด่วน)' : isWarning ? 'เฝ้าระวัง' : 'ปกติ';
+
+        container.innerHTML += `
+          <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+            <div class="text-xs font-semibold text-slate-500 mb-1 flex items-center justify-between">
+              <span>UF No.${u + 1}</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${statusClass}">${statusTxt}</span>
+            </div>
+            <div class="text-2xl font-bold font-mono text-slate-900 mt-1">
+              ${curTmp.toFixed(3)} <span class="text-xs font-normal text-slate-500">bar</span>
+            </div>
+            <div class="text-[11px] text-slate-500 mt-2 space-y-0.5 border-t border-slate-100 pt-1.5 font-mono">
+              <div>Flux: <strong class="text-sky-700">${avgFlux.toFixed(1)}</strong> LMH</div>
+              <div>สูงสุด: <strong>${maxTmp.toFixed(3)}</strong> bar</div>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function renderMultiChart() {
+      const ctx = document.getElementById('multiUnitChart').getContext('2d');
+      if (multiChartInstance) multiChartInstance.destroy();
+
+      multiChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: timeLabels,
+          datasets: [
+            ...tmpData.map((series, uIdx) => ({
+              label: 'UF No.' + (uIdx + 1),
+              data: series,
+              borderColor: unitColors[uIdx],
+              backgroundColor: unitColors[uIdx],
+              borderWidth: 2,
+              pointRadius: 2,
+              tension: 0.2
+            })),
+            {
+              label: 'เกณฑ์เตือน (' + warningTmp.toFixed(2) + ' bar)',
+              data: Array(timeLabels.length).fill(warningTmp),
+              borderColor: '#f59e0b',
+              borderWidth: 1.5,
+              borderDash: [5, 5],
+              pointRadius: 0,
+              fill: false
+            },
+            {
+              label: 'เกณฑ์วิกฤต (' + criticalTmp.toFixed(2) + ' bar)',
+              data: Array(timeLabels.length).fill(criticalTmp),
+              borderColor: '#ef4444',
+              borderWidth: 1.5,
+              borderDash: [5, 5],
+              pointRadius: 0,
+              fill: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { title: { display: true, text: 'TMP (bar)' }, min: -0.05, max: 0.8 },
+            x: { ticks: { maxTicksLimit: 12 } }
+          }
+        }
+      });
+    }
+
+    function renderSingleUnit(unitIdx) {
+      selectedUnitIdx = unitIdx;
+      for (let i = 0; i < 5; i++) {
+        const btn = document.getElementById('btnUnit' + i);
+        if (i === unitIdx) {
+          btn.className = 'unit-btn px-3 py-1 rounded-lg text-xs font-bold bg-blue-600 text-white cursor-pointer';
+        } else {
+          btn.className = 'unit-btn px-3 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 cursor-pointer';
+        }
+      }
+
+      const ctx = document.getElementById('singleUnitChart').getContext('2d');
+      if (singleChartInstance) singleChartInstance.destroy();
+
+      singleChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: timeLabels,
+          datasets: [
+            {
+              label: 'TMP (bar) - UF No.' + (unitIdx + 1),
+              data: tmpData[unitIdx],
+              borderColor: unitColors[unitIdx],
+              backgroundColor: unitColors[unitIdx] + '22',
+              fill: true,
+              borderWidth: 2.5,
+              tension: 0.2,
+              yAxisID: 'y'
+            },
+            {
+              label: 'Flow (m³/h)',
+              data: flowData[unitIdx],
+              borderColor: '#94a3b8',
+              borderWidth: 1.5,
+              borderDash: [3, 3],
+              pointRadius: 0,
+              yAxisID: 'y1'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { title: { display: true, text: 'TMP (bar)' }, min: -0.05, max: 0.8 },
+            y1: { position: 'right', title: { display: true, text: 'Flow (m³/h)' }, grid: { drawOnChartArea: false } },
+            x: { ticks: { maxTicksLimit: 12 } }
+          }
+        }
+      });
+    }
+
+    function selectUnit(idx) {
+      renderSingleUnit(idx);
+    }
+
+    function renderDataTable(labelsToRender) {
+      const tbody = document.getElementById('mainDataTableBody');
+      tbody.innerHTML = '';
+      labelsToRender.forEach((lbl, idx) => {
+        const f1 = (flowData[0][idx] / totalArea) * 1000;
+        const f2 = (flowData[1][idx] / totalArea) * 1000;
+        const f3 = (flowData[2][idx] / totalArea) * 1000;
+        const f4 = (flowData[3][idx] / totalArea) * 1000;
+        const f5 = (flowData[4][idx] / totalArea) * 1000;
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50">
+            <td class="py-2 px-3 text-slate-400 text-center">${idx + 1}</td>
+            <td class="py-2 px-3 font-semibold text-slate-800">${lbl}</td>
+            <td class="py-2 px-3 text-right ${tmpData[0][idx] >= criticalTmp ? 'text-red-600 font-bold' : ''}">${tmpData[0][idx].toFixed(4)}</td>
+            <td class="py-2 px-3 text-right text-slate-600">${flowData[0][idx].toFixed(2)}</td>
+            <td class="py-2 px-3 text-right text-sky-700 font-bold">${f1.toFixed(1)}</td>
+            <td class="py-2 px-3 text-right ${tmpData[1][idx] >= criticalTmp ? 'text-red-600 font-bold' : ''}">${tmpData[1][idx].toFixed(4)}</td>
+            <td class="py-2 px-3 text-right text-slate-600">${flowData[1][idx].toFixed(2)}</td>
+            <td class="py-2 px-3 text-right text-sky-700 font-bold">${f2.toFixed(1)}</td>
+            <td class="py-2 px-3 text-right">${tmpData[2][idx].toFixed(4)}</td>
+            <td class="py-2 px-3 text-right text-slate-600">${flowData[2][idx].toFixed(2)}</td>
+            <td class="py-2 px-3 text-right text-sky-700 font-bold">${f3.toFixed(1)}</td>
+            <td class="py-2 px-3 text-right">${tmpData[3][idx].toFixed(4)}</td>
+            <td class="py-2 px-3 text-right text-slate-600">${flowData[3][idx].toFixed(2)}</td>
+            <td class="py-2 px-3 text-right text-sky-700 font-bold">${f4.toFixed(1)}</td>
+            <td class="py-2 px-3 text-right">${tmpData[4][idx].toFixed(4)}</td>
+            <td class="py-2 px-3 text-right text-slate-600">${flowData[4][idx].toFixed(2)}</td>
+            <td class="py-2 px-3 text-right text-sky-700 font-bold">${f5.toFixed(1)}</td>
+          </tr>
+        `;
+      });
+    }
+
+    // Date Quick Filter
+    function filterByDate(dateStr) {
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        b.className = 'filter-btn px-2 py-1 rounded font-medium text-slate-600 hover:bg-white cursor-pointer';
+      });
+
+      if (dateStr === 'all') {
+        document.getElementById('btnFilterAll').className = 'filter-btn px-2.5 py-1 rounded font-bold bg-emerald-600 text-white shadow-xs cursor-pointer';
+        renderDataTable(timeLabels);
+        showToast('แสดงข้อมูลทั้งหมด 43 จุด');
+      } else {
+        const dayMap = {
+          '2025-07-01': '01/07',
+          '2025-07-02': '02/07',
+          '2025-07-03': '03/07',
+          '2025-07-04': '04/07',
+          '2025-07-05': '05/07'
+        };
+        const searchPart = dayMap[dateStr] || dateStr;
+        const filteredLabels = timeLabels.filter(l => l.includes(searchPart));
+        renderDataTable(filteredLabels);
+        showToast('แสดงเฉพาะข้อมูลวันที่ ' + searchPart);
+      }
+    }
+
+    function filterTableSearch() {
+      const q = document.getElementById('tableSearchInput').value.toLowerCase();
+      const filtered = timeLabels.filter(l => l.toLowerCase().includes(q));
+      renderDataTable(filtered);
+    }
+
+    // ------------------------------------------
+    // 3. EXCEL ONLINE INTERACTIVE EDITOR
+    // ------------------------------------------
+    function renderSpreadsheetTable() {
+      const tbody = document.getElementById('spreadsheetTableBody');
+      tbody.innerHTML = '';
+      document.getElementById('spreadsheetRowCount').innerText = timeLabels.length;
+
+      timeLabels.forEach((lbl, idx) => {
+        tbody.innerHTML += `
+          <tr class="divide-x divide-slate-200 hover:bg-emerald-50/40">
+            <td class="py-1 px-2 text-center bg-slate-100 text-slate-500">${idx + 1}</td>
+            <td class="p-1"><input type="text" value="${lbl}" onchange="cellEdited(event, ${idx}, 'date')" class="w-full bg-transparent px-1.5 py-0.5 rounded focus:bg-white focus:ring-1 focus:ring-emerald-500 font-mono text-xs"></td>
+            <td class="p-1"><input type="number" step="0.001" value="${tmpData[0][idx]}" onchange="cellEdited(event, ${idx}, 'u1_tmp')" class="w-full text-right bg-transparent px-1.5 py-0.5 rounded focus:bg-white focus:ring-1 focus:ring-emerald-500 font-mono text-xs"></td>
+            <td class="p-1"><input type="number" step="0.1" value="${flowData[0][idx]}" onchange="cellEdited(event, ${idx}, 'u1_flow')" class="w-full text-right bg-transparent px-1.5 py-0.5 rounded focus:bg-white focus:ring-1 focus:ring-emerald-500 font-mono text-xs"></td>
+            <td class="p-1"><input type="number" step="0.001" value="${tmpData[1][idx]}" onchange="cellEdited(event, ${idx}, 'u2_tmp')" class="w-full text-right bg-transparent px-1.5 py-0.5 rounded focus:bg-white focus:ring-1 focus:ring-emerald-500 font-mono text-xs"></td>
+            <td class="p-1"><input type="number" step="0.1" value="${flowData[1][idx]}" onchange="cellEdited(event, ${idx}, 'u2_flow')" class="w-full text-right bg-transparent px-1.5 py-0.5 rounded focus:bg-white focus:ring-1 focus:ring-emerald-500 font-mono text-xs"></td>
+            <td class="p-1"><input type="number" step="0.001" value="${tmpData[2][idx]}" onchange="cellEdited(event, ${idx}, 'u3_tmp')" class="w-full text-right bg-transparent px-1.5 py-0.5 rounded focus:bg-white focus:ring-1 focus:ring-emerald-500 font-mono text-xs"></td>
+            <td class="p-1"><input type="number" step="0.1" value="${flowData[2][idx]}" onchange="cellEdited(event, ${idx}, 'u3_flow')" class="w-full text-right bg-transparent px-1.5 py-0.5 rounded focus:bg-white focus:ring-1 focus:ring-emerald-500 font-mono text-xs"></td>
+            <td class="p-1"><input type="number" step="0.001" value="${tmpData[3][idx]}" onchange="cellEdited(event, ${idx}, 'u4_tmp')" class="w-full text-right bg-transparent px-1.5 py-0.5 rounded focus:bg-white focus:ring-1 focus:ring-emerald-500 font-mono text-xs"></td>
+            <td class="p-1"><input type="number" step="0.1" value="${flowData[3][idx]}" onchange="cellEdited(event, ${idx}, 'u4_flow')" class="w-full text-right bg-transparent px-1.5 py-0.5 rounded focus:bg-white focus:ring-1 focus:ring-emerald-500 font-mono text-xs"></td>
+            <td class="p-1"><input type="number" step="0.001" value="${tmpData[4][idx]}" onchange="cellEdited(event, ${idx}, 'u5_tmp')" class="w-full text-right bg-transparent px-1.5 py-0.5 rounded focus:bg-white focus:ring-1 focus:ring-emerald-500 font-mono text-xs"></td>
+            <td class="p-1"><input type="number" step="0.1" value="${flowData[4][idx]}" onchange="cellEdited(event, ${idx}, 'u5_flow')" class="w-full text-right bg-transparent px-1.5 py-0.5 rounded focus:bg-white focus:ring-1 focus:ring-emerald-500 font-mono text-xs"></td>
+          </tr>
+        `;
+      });
+    }
+
+    function cellEdited(e, rowIdx, colType) {
+      const val = e.target.value;
+      if (colType === 'date') timeLabels[rowIdx] = val;
+      else if (colType === 'u1_tmp') tmpData[0][rowIdx] = Number(val);
+      else if (colType === 'u1_flow') flowData[0][rowIdx] = Number(val);
+      else if (colType === 'u2_tmp') tmpData[1][rowIdx] = Number(val);
+      else if (colType === 'u2_flow') flowData[1][rowIdx] = Number(val);
+      else if (colType === 'u3_tmp') tmpData[2][rowIdx] = Number(val);
+      else if (colType === 'u3_flow') flowData[2][rowIdx] = Number(val);
+      else if (colType === 'u4_tmp') tmpData[3][rowIdx] = Number(val);
+      else if (colType === 'u4_flow') flowData[3][rowIdx] = Number(val);
+      else if (colType === 'u5_tmp') tmpData[4][rowIdx] = Number(val);
+      else if (colType === 'u5_flow') flowData[4][rowIdx] = Number(val);
+    }
+
+    function addSpreadsheetRow() {
+      const newIdx = timeLabels.length + 1;
+      timeLabels.push('05/07/2025 ' + String(newIdx).padStart(2, '0') + ':00');
+      tmpData[0].push(0.095); flowData[0].push(45.0);
+      tmpData[1].push(0.065); flowData[1].push(45.0);
+      tmpData[2].push(0.005); flowData[2].push(20.0);
+      tmpData[3].push(0.025); flowData[3].push(35.0);
+      tmpData[4].push(0.035); flowData[4].push(40.0);
+      renderSpreadsheetTable();
+      showToast('เพิ่มแถวใหม่สำเร็จ (+1 แถว)');
+    }
+
+    function deleteLastSpreadsheetRow() {
+      if (timeLabels.length <= 1) return;
+      timeLabels.pop();
+      for (let u = 0; u < 5; u++) {
+        tmpData[u].pop();
+        flowData[u].pop();
+      }
+      renderSpreadsheetTable();
+      showToast('ลบแถวล่าสุดเรียบร้อย');
+    }
+
+    function saveExcelOnlineChanges() {
+      refreshDashboard();
+      showToast('บันทึกข้อมูลเข้าแดชบอร์ดสำเร็จ! กราฟและการคำนวณอัปเดตเรียบร้อย');
+    }
+
+    function resetToOriginalData() {
+      timeLabels = [...initialTimeLabels];
+      tmpData = initialTmp.map(row => [...row]);
+      flowData = initialFlow.map(row => [...row]);
+      refreshDashboard();
+      if (!document.getElementById('tabContentExcel').classList.contains('hidden')) {
+        renderSpreadsheetTable();
+      }
+      showToast('คืนค่าข้อมูล SCADA ต้นฉบับ 43 รอบการกรองแล้ว');
+    }
+
+    function exportTableToCSV() {
+      let csv = 'No,DateTime,UF1_TMP,UF1_Flow,UF2_TMP,UF2_Flow,UF3_TMP,UF3_Flow,UF4_TMP,UF4_Flow,UF5_TMP,UF5_Flow\n';
+      timeLabels.forEach((lbl, i) => {
+        csv += `${i+1},"${lbl}",${tmpData[0][i]},${flowData[0][i]},${tmpData[1][i]},${flowData[1][i]},${tmpData[2][i]},${flowData[2][i]},${tmpData[3][i]},${flowData[3][i]},${tmpData[4][i]},${flowData[4][i]}\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'UF_Membrane_Data.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('ดาวน์โหลดไฟล์ CSV เรียบร้อย');
+    }
+
+    // ------------------------------------------
+    // 4. PHYSICS SIMULATION CANVAS
+    // ------------------------------------------
+    let simAnimationId = null;
+    let cakeLayerHeight = 15;
+    let isBackwashing = false;
+    let isCip = false;
+
+    function startPhysicsSim() {
+      const canvas = document.getElementById('physicsCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.parentElement.clientWidth || 800;
+      canvas.height = canvas.parentElement.clientHeight || 360;
+
+      // Particle simulation
+      const particles = [];
+      for (let i = 0; i < 60; i++) {
+        particles.push({
+          x: Math.random() * canvas.width * 0.45,
+          y: Math.random() * canvas.height,
+          vx: Math.random() * 1.5 + 0.8,
+          vy: (Math.random() - 0.5) * 0.8,
+          radius: Math.random() * 3 + 1.5
+        });
+      }
+
+      function loop() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw Membrane Barrier
+        const membX = canvas.width * 0.5;
+        ctx.fillStyle = '#334155';
+        ctx.fillRect(membX, 20, 24, canvas.height - 40);
+
+        // Draw Membrane Pores
+        ctx.fillStyle = '#0f172a';
+        for (let y = 35; y < canvas.height - 35; y += 18) {
+          ctx.fillRect(membX, y, 24, 7);
+        }
+
+        // Cake Layer
+        ctx.fillStyle = isCip ? 'rgba(52, 211, 153, 0.4)' : isBackwashing ? 'rgba(59, 130, 246, 0.5)' : 'rgba(217, 119, 6, 0.6)';
+        ctx.fillRect(membX - cakeLayerHeight, 20, cakeLayerHeight, canvas.height - 40);
+
+        // Particles
+        ctx.fillStyle = '#60a5fa';
+        particles.forEach(p => {
+          if (isBackwashing) {
+            p.x -= 3.5;
+          } else {
+            p.x += p.vx;
+          }
+          p.y += p.vy;
+
+          if (p.x > membX - cakeLayerHeight && !isBackwashing) {
+            p.x = Math.random() * 60;
+            if (cakeLayerHeight < 55) cakeLayerHeight += 0.05;
+          }
+          if (p.x < 0) p.x = membX - 10;
+          if (p.y < 20 || p.y > canvas.height - 20) p.vy *= -1;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        // Update Text
+        const pct = Math.min(100, Math.round((cakeLayerHeight / 55) * 100));
+        document.getElementById('cakeThicknessTxt').innerText = pct + '%';
+
+        simAnimationId = requestAnimationFrame(loop);
+      }
+
+      if (simAnimationId) cancelAnimationFrame(simAnimationId);
+      loop();
+    }
+
+    function triggerBackwashSim() {
+      isBackwashing = true;
+      document.getElementById('simStatus').innerText = 'กำลังล้างย้อน Backwash & Air Scour...';
+      document.getElementById('simStatus').className = 'text-blue-400 font-bold';
+      const interval = setInterval(() => {
+        if (cakeLayerHeight > 8) cakeLayerHeight -= 1.8;
+      }, 50);
+
+      setTimeout(() => {
+        clearInterval(interval);
+        isBackwashing = false;
+        cakeLayerHeight = 8;
+        document.getElementById('simStatus').innerText = 'ล้างย้อนสำเร็จ (พร้อมกรองต่อ)';
+        document.getElementById('simStatus').className = 'text-emerald-400 font-bold';
+      }, 2500);
+    }
+
+    function triggerCipSim() {
+      isCip = true;
+      document.getElementById('simStatus').innerText = 'กำลังแช่ล้างเคมี Clean-in-Place (Citric + NaOH)...';
+      document.getElementById('simStatus').className = 'text-purple-400 font-bold';
+
+      setTimeout(() => {
+        isCip = false;
+        cakeLayerHeight = 2;
+        document.getElementById('simStatus').innerText = 'ล้าง CIP สำเร็จ (เมมเบรนสะอาด 100%)';
+        document.getElementById('simStatus').className = 'text-emerald-400 font-bold';
+      }, 3000);
+    }
+
+    // ------------------------------------------
+    // 5. INITIALIZATION ON LOAD
+    // ------------------------------------------
+    window.addEventListener('DOMContentLoaded', () => {
+      refreshDashboard();
+    });
+  </script>
+</body>
+</html>
