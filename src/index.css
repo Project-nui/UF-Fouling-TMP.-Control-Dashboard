@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@theme {
+  --color-deep-bg: #090A0F;
+  --color-surface-card: #13141F;
+  --color-surface-card-hover: #191B29;
+  --color-surface-card-active: #212437;
+  --color-border-dark: #1F2238;
+  --color-border-subtle: #2C2F4D;
+  --color-primary-accent: #8B5CF6;
+  --color-secondary-accent: #EC4899;
+  --color-text-primary: #FFFFFF;
+  --color-text-muted: #A1A1AA;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html, body {
+  background-color: #090A0F;
+  color: #FFFFFF;
+  font-family: 'Prompt', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Custom SaaS Dark Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #090A0F;
+}
+::-webkit-scrollbar-thumb {
+  background: #1F2238;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8B5CF6;
+}
+
+/* Selection highlight */
+::selection {
+  background-color: rgba(139, 92, 246, 0.4);
+  color: #FFFFFF;
+}
+
+/* Custom Glow Utilities */
+.neon-glow-violet {
+  box-shadow: 0 0 25px -5px rgba(139, 92, 246, 0.35);
+}
+
+.neon-glow-pink {
+  box-shadow: 0 0 25px -5px rgba(236, 72, 153, 0.35);
+}
+
+.neon-border-gradient {
+  border-image: linear-gradient(to right, #8B5CF6, #EC4899) 1;
+}
